@@ -1,0 +1,164 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <title>俄罗斯方块</title>
+    <link rel="stylesheet" type="text/css" href="CSS.css" />
+    <script src="simpleSelector.js"></script>
+</head>
+
+<body>
+
+  
+    <div id="window">
+        <canvas id="canvas" width=200 height=400></canvas>
+        <div id="rightbox">
+            
+            <span class = "panelLabel">下一个</span><br/>
+            <canvas id="scanvas" width=80 height=40></canvas><br/>
+
+            <span class="panelLabel">得分</span>
+            <div id="digtalNumber" class="numberStyle">
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="n0"></div>
+            </div>
+
+            <span class="panelLabel">行数</span>
+            <div id="line" class="numberStyle">
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="n0"></div>
+            </div>
+
+            <span class="panelLabel">关卡</span>
+            <div id="leval" class="numberStyle">
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="ns"></div>
+                <div class="n0"></div>
+            </div>
+
+            <div id="control">
+                <div id="startPause">开始</div>
+                <div id="reset">重来</div>
+            </div>
+
+
+            <div id="infotest">info</div>
+            <div id="entertest">enter</div>
+
+           
+
+        </div>
+    </div>
+
+    <div id="backGroundCover"></div>
+
+    <!--确定是否重来-->
+
+    <div class="t-win" id = "u-reset">
+        <div class="t-head">
+            <span class="t-title">提示</span>
+            <span class="t-close t-closeX">X</span>
+        </div>
+        <div class="t-body">
+            <div>游戏正在进行，你确定退出吗？</div>
+            <div class="t-okAndNo">
+                <div class="t-closeBT" id="u-resetBT">确定</div>
+                <div class="t-close t-closeBT">算了</div>
+            </div>
+        </div>
+    </div>
+
+    <!--游戏结束确认窗口-->
+
+    <div class="t-win" id = "u-gameOver">
+        <div class="t-head">
+            <span class="t-title">提示</span>
+            <span class="t-close t-closeX">X</span>
+        </div>
+        <div class="t-body">
+            <div>游戏结束！</div>
+        </div>
+    </div>
+
+    <!--游戏统计信息板-->
+
+    <div class="t-win" id="u-info">
+
+        <div class="t-head">
+            <span class="t-title">TOP 10</span>
+            <span class="t-close t-closeX">X</span>
+        </div>
+        <div class="table-body">
+            <table id="table-list">
+                <tr>
+                    <th>昵称</th>
+                    <th>分数</th>
+                    <th>关卡</th>
+                    <th>行数</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!--top10-->
+    <div class="t-win" id = "u-enterTop10">
+        <div class="t-head">
+            <span class="t-title">提示</span>
+            <span class="t-close t-closeX">X</span>
+        </div>
+        <div class="t-body">
+            <div style="font-size : 2em">请输入大名</div>
+            <input id="u-enterName" type="text" />
+            <div class="t-okAndNo">
+                    <div class="t-closeBT" id="u-enterNameBT">确定</div>
+                    <div class="t-close t-closeBT" id="">算了</div>
+                </div>
+        </div>
+    </div>
+
+    <script src="Js-test.js"></script>
+    
+</body>
+
+</html>
