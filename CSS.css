@@ -250,6 +250,7 @@ body {
     align-items: center;
     color : #555;
     margin: 0.3em;
+    padding: 0.5em;
     min-height: 10em;
     min-width: 18em;
     background-color: #FFF;
@@ -268,6 +269,7 @@ body {
     width : 3em;
     border : 1px solid #555;
     padding: 0.1em;
+    margin-bottom: 0.5em;
     border-radius: 3px;
     cursor: pointer;
     box-shadow: 1px 1px 1px #555;
@@ -275,7 +277,8 @@ body {
 
 .table-body{
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
+    flex-direction: column;
     color : #555;
     margin: 0.3em;
     min-height: 10em;
@@ -298,4 +301,14 @@ th, td {
     width : 5em;
 }
 
+#u-enterName {
+    font-size: 120%;
+    margin-top: 1em;
+}
 
+#u-enterTop10info{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    padding: 1em;
+}

@@ -52,13 +52,10 @@
                 <div id="reset">重来</div>
             </div>
 
-
-            <div id="infotest">info</div>
-            <div id="entertest">enter</div>
-
-           
+            <a style="font-size: 0.7em; color : #FFF" href="#" id="infotest">TOP10</a>
 
         </div>
+        
     </div>
 
     <div id="backGroundCover"></div>
@@ -100,6 +97,7 @@
             <span class="t-close t-closeX">X</span>
         </div>
         <div class="table-body">
+
             <table id="table-list">
                 <tr>
                     <th>昵称</th>
@@ -138,22 +136,34 @@
                     <td></td>
                 </tr>
             </table>
+
+            <div><a href="#" id="clearData" style="font-size: 0.8em; color : #999">重置数据</a></div>
         </div>
     </div>
 
     <!--top10-->
     <div class="t-win" id = "u-enterTop10">
         <div class="t-head">
-            <span class="t-title">提示</span>
+            <span class="t-title">:)</span>
             <span class="t-close t-closeX">X</span>
         </div>
         <div class="t-body">
-            <div style="font-size : 2em">请输入大名</div>
+
+            <div>TOP10</div>
+            <div style="font-size : 1.5em; color : gold">请输入大名</div>
+
             <input id="u-enterName" type="text" />
+
+            <div id="u-enterTop10info">
+                <div>分数 <span id="u-score"></span></div>
+                <div>关卡 <span id="u-level"></span></div>
+                <div>行数 <span id="u-lines"></span></div>
+            </div>
+
             <div class="t-okAndNo">
-                    <div class="t-closeBT" id="u-enterNameBT">确定</div>
+                    <div class="t-closeBT" id="u-enterNameBT">保存</div>
                     <div class="t-close t-closeBT" id="">算了</div>
-                </div>
+            </div>
         </div>
     </div>
 

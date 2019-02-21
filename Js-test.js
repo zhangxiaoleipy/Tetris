@@ -300,8 +300,12 @@ function checkEnd () {
         gameOver = true;
         gameStart = false;
         startAndPause.innerText = "开始";
-        $("#gameIsOver").show();
-        BCcover("open");
+        //ui.gameover.style.display = "block";
+        $("#u-score").text(gameScore);
+        $("#u-level").text(gameLeval);
+        $("#u-lines").text(finishLine);
+        ui.enterTop10.style.display = "block";
+        screenCover("open");
         return;
     }
 }
@@ -800,7 +804,7 @@ function getType (m4) {
 
 //-----------------------------按钮背景掩盖函数-------------------------------------//
 
-function BCcover (c) {
+function screenCover (c) {
     let w = window.innerWidth + "px";
     let h = window.innerHeight + "px";
     if (c === "open") {
@@ -819,18 +823,7 @@ function BCcover (c) {
 }
 
 
-//------------------点击t-close标签，关闭窗口---------------
-
-document.querySelectorAll((".t-win")).forEach(function (item) {
-    item.querySelectorAll(".t-close").forEach(function (i) {
-        i.addEventListener("click", function () {
-            item.style.display = "none";
-            BCcover("close");
-        }, false);
-    })
-})
-
-//------------------------窗口DOM对应的变量存储-----------------
+//----------------------------------窗口DOM对应的变量存储-------------------------------------
 
 let ui = Object.create(null);
 ui.reset = document.querySelector("#u-reset");
@@ -839,12 +832,23 @@ ui.enterTop10 = document.querySelector("#u-enterTop10");
 ui.info = document.querySelector("#u-info");
 
 
-//-----------------------是否重置功能区域-----------------------
+//------------------------------点击t-close标签，关闭窗口-------------------------------------
+
+document.querySelectorAll((".t-win")).forEach(function (item) {
+    item.querySelectorAll(".t-close").forEach(function (i) {
+        i.addEventListener("click", function () {
+            item.style.display = "none";
+            screenCover("close");
+        }, false);
+    })
+})
+
+//-------------------------------------是否重置功能区域-----------------------------------------
 
 //打开窗口
 function areYouSure () {
     ui.reset.style.display = "block";
-    BCcover("open");
+    screenCover("open");
 }
 
 //"确认" 按钮事件
@@ -853,36 +857,40 @@ document.querySelector("#u-resetBT").addEventListener("click", function () {
     startAndPause.innerText = "开始";
     startAndPause.style.backGroundColor = "white";
     ui.reset.style.display = "none";
-    BCcover("close");
+    screenCover("close");
 })
 
 
-
-//-----------------------信息板区域-----------------------------
-
+//-----------------------------------------信息板区域----------------------------------------------
 
 
 //初始数据
 let initGameDate = {
-    DATA : []
+    data : []
 } 
 //载入数据
-let loadGameData = JSON.parse(localStorage.getItem("TetrisGameData"));
-
-if (!loadGameData) {
-    loadGameData = initGameDate;
+let saveGameData = JSON.parse(localStorage.getItem("TetrisGameData"));
+//如果载入的数据为空，则将其指向初始的数据
+if (!saveGameData) {
+    saveGameData = initGameDate;
 }
 
-function saveGameData () {
+function saveData() {
     if (window.localStorage) {
-        if (loadGameData) {
-            localStorage.setItem("TetrisGameData", JSON.stringify(loadGameData))
-        } else {
-            localStorage.setItem("TetrisGameData", JSON.stringify(initGameDate))
+        if (saveGameData) {
+            localStorage.setItem("TetrisGameData", JSON.stringify(saveGameData))
         }
     }
 }
 
+function loadGameData (data) {
+    if (saveGameData.data.length < 10) {
+        saveGameData.data.push(data);
+        saveGameData.data.sort(function (a, b) {
+            return a[1] - a[2];
+        })
+    }
+}
 
 ui.tdlist = document.querySelectorAll("td");
 
@@ -899,23 +907,35 @@ function displayinfoFunc (data) {
 }
 
 
-//------------------------输入top10 区域
-
-function info() {
-    displayinfoFunc(loadGameData.DATA, table);
-    ui.info.style.display = "block";
-}
 
 $("#infotest").click(function () {
-    info();
+    displayinfoFunc(saveGameData.data, table);
+    ui.info.style.display = "block";
+    screenCover("open");
 })
 
-$("#entertest").click(function () {
-    ui.enterTop10.style.display = "block";
-})
+
+
+document.querySelector("#clearData").addEventListener("click", function () {
+    if (confirm("清除所有数据 ?")) {
+        saveGameData.data = [];
+        saveData();
+    }
+},false)
+
+
+//------------------------top10 录入区域------------------------
+
 
 document.querySelector("#u-enterNameBT").addEventListener("click", function () {
     let name = document.querySelector("#u-enterName").value;
-    loadGameData.DATA.push([name, gameScore, gameLeval, finishLine]);
+    loadGameData([name, gameScore, gameLeval, finishLine]);
+    saveData();
+    screenCover("close");
     ui.enterTop10.style.display = "none";
 },false);
+
+
+
+
+
