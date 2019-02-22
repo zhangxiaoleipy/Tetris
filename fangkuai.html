@@ -1,19 +1,21 @@
 ﻿<!doctype html>
-<html>
 
+<html>
 <head>
     <title>俄罗斯方块</title>
     <link rel="stylesheet" type="text/css" href="CSS.css" />
     <script src="simpleSelector.js"></script>
+    <script src="timerfile.js"></script>
 </head>
 
 <body>
-
-  
     <div id="window">
+        <!--游戏主面板-->
         <canvas id="canvas" width=200 height=400></canvas>
+
+        <!--右侧信息板-->
         <div id="rightbox">
-            
+
             <span class = "panelLabel">下一个</span><br/>
             <canvas id="scanvas" width=80 height=40></canvas><br/>
 
@@ -58,6 +60,7 @@
         
     </div>
 
+    <!--弹出窗口背景遮挡---->
     <div id="backGroundCover"></div>
 
     <!--确定是否重来-->
@@ -99,42 +102,17 @@
         <div class="table-body">
 
             <table id="table-list">
-                <tr>
-                    <th>昵称</th>
-                    <th>分数</th>
-                    <th>关卡</th>
-                    <th>行数</th>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
+                <tr><th>昵称</th><th>分数</th><th>关卡</th><th>行数</th></tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
+                <tr> <td></td><td></td><td></td><td></td> </tr>
             </table>
 
             <div><a href="#" id="clearData" style="font-size: 0.8em; color : #999">重置数据</a></div>
@@ -167,7 +145,7 @@
         </div>
     </div>
 
-    <script src="Js-test.js"></script>
+    <script src="gamejs.js"></script>
     
 </body>
 

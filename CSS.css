@@ -189,7 +189,7 @@ body {
     margin-left: 5px;
     user-select: none;
     -moz-user-select: none;
-    background-color: rgb(223, 189, 195);
+    background-color: pink;
 }
 
 #startPause:active,
@@ -243,6 +243,10 @@ body {
     box-shadow: 1px 1px 1px #555;
 }
 
+.t-closeX:active{
+    box-shadow: none;
+}
+
 .t-body{
     display: flex;
     flex-direction: column;
@@ -263,7 +267,6 @@ body {
     width : 10em;
 }
 
-
 .t-closeBT{
     text-align: center;
     width : 3em;
@@ -274,6 +277,11 @@ body {
     cursor: pointer;
     box-shadow: 1px 1px 1px #555;
 }
+
+.t-closeBT:active{
+    box-shadow: none;
+}
+
 
 .table-body{
     display: flex;

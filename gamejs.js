@@ -13,6 +13,7 @@ let fineshLineDisplay = document.querySelector("#line").children;
 let levalDisplay = document.querySelector("#leval").children;
 let startAndPause = document.querySelector("#startPause");
 let reset = document.querySelector("#reset");
+let timer = new CreateTimer();
 
 function toNegative (n) {
     return n <= 0 ? n : -n;
@@ -869,56 +870,73 @@ let initGameDate = {
     data : []
 } 
 //载入数据
-let saveGameData = JSON.parse(localStorage.getItem("TetrisGameData"));
+let localData = JSON.parse(localStorage.getItem("TetrisGameData"));
+
 //如果载入的数据为空，则将其指向初始的数据
-if (!saveGameData) {
-    saveGameData = initGameDate;
+if (!localData) {
+    localData = initGameDate;
 }
 
+//将比赛记录保存到浏览器
 function saveData() {
     if (window.localStorage) {
-        if (saveGameData) {
-            localStorage.setItem("TetrisGameData", JSON.stringify(saveGameData))
+        if (localData) {
+            localStorage.setItem("TetrisGameData", JSON.stringify(localData))
         }
     }
 }
 
-function loadGameData (data) {
-    if (saveGameData.data.length < 10) {
-        saveGameData.data.push(data);
-        saveGameData.data.sort(function (a, b) {
-            return a[1] - a[2];
+function checkDataAndSave (data) {
+
+    let len = localData.data.length;
+
+    let local = localData.data;
+
+    if (len < 10) {
+
+        local.push(data); 
+        local.sort(function (a, b) {
+            return b[1] - a[1];
         })
+
+    } else {
+
+        for (let i = 0; i < len; i ++) {
+            if (data[1] > local[i][1]) {
+                local.splice(i , 0, data);
+                local.pop();
+                break;
+            }
+        }
     }
+
+    saveData();
 }
 
 ui.tdlist = document.querySelectorAll("td");
 
-function displayinfoFunc (data) {
-    if (data) {
-        let index = 0;
-        for (let item of data) {
-            for (i of item) {
-                ui.tdlist[index].innerText = i;
-                index += 1;
-            }
+function displayinfoFunc(data) {
+    if (!data) { return };
+    let index = 0;
+    for (let item of data) {
+        for (i of item) {
+            ui.tdlist[index].innerText = i;
+            index += 1;
         }
     }
 }
 
 
-
 $("#infotest").click(function () {
-    displayinfoFunc(saveGameData.data, table);
+    displayinfoFunc(localData.data);
     ui.info.style.display = "block";
     screenCover("open");
 })
 
 
-
 document.querySelector("#clearData").addEventListener("click", function () {
     if (confirm("清除所有数据 ?")) {
-        saveGameData.data = [];
+        localData.data = [];
         saveData();
     }
 },false)
@@ -929,8 +947,7 @@ document.querySelector("#clearData").addEventListener("click", function () {
 
 document.querySelector("#u-enterNameBT").addEventListener("click", function () {
     let name = document.querySelector("#u-enterName").value;
-    loadGameData([name, gameScore, gameLeval, finishLine]);
-    saveData();
+    checkDataAndSave([name || "匿名", gameScore, gameLeval, finishLine]);
     screenCover("close");
     ui.enterTop10.style.display = "none";
 },false);
