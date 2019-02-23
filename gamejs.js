@@ -913,15 +913,26 @@ function checkDataAndSave (data) {
     saveData();
 }
 
-ui.tdlist = document.querySelectorAll("td");
-
+ui.trList = document.querySelectorAll("#table-list tr");
+//清除比赛记录板Element里的数据
+function clearInfo () {
+    let len = ui.trList.length;
+    for (let j = 1; j < len; j++) {
+        for (let i = 0; i < ui.trList[j].children.length; i ++) {
+            ui.trList[j].children[i].innerText = "";
+        }
+    }
+}
+//将localData的数据展示到记录板
 function displayinfoFunc(data) {
-    if (!data) { return };
-    let index = 0;
-    for (let item of data) {
-        for (i of item) {
-            ui.tdlist[index].innerText = i;
-            index += 1;
+    let len = data.length + 1;
+    for (let j = 1; j < len; j ++) {
+        for (let i = 0; i < ui.trList[j].children.length; i ++) {
+            if (i === 0) {
+                ui.trList[j].children[i].innerText = j;
+            } else {
+                ui.trList[j].children[i].innerText = data[j - 1][i - 1];
+            }
         }
     }
 }
@@ -938,6 +949,7 @@ document.querySelector("#clearData").addEventListener("click", function () {
     if (confirm("清除所有数据 ?")) {
         localData.data = [];
         saveData();
+        clearInfo();
     }
 },false)
 
