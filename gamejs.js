@@ -33,7 +33,7 @@ function create4Arr () {
 
 function createColor(c) {
     switch (c) {
-        case 0: return "#EEE";
+        case 0: return "#FFF";
         case 1: return "#F60";
         case 2: return "#CF93B2";
         case 3: return "#0C0";
@@ -92,17 +92,12 @@ function digtalNumber (n, el) {
 
 
 function smallDisplay(t, c) {
-
     let tmp = create4Arr();
-
     copyAtoB(t, tmp);
-
     tmp = tmp.map(function (n) {
         return [n[0], Math.abs(n[1]) - 3];
     })
-
     pix2.clearRect(0, 0, 80, 40);
-
     tmp.forEach(function (n) {
         pix2.beginPath();
         pix2.lineWidth = 1;
@@ -115,41 +110,50 @@ function smallDisplay(t, c) {
 }
 
 
+//存储所有信息数据的table
+const table = [];
 
-let table = [];
-
+//绘制游戏方块区域函数
 function drawTable() {
 
     pix.clearRect(0, 0, 200, 400);
-
     let size = 20;
+    let tmp;
 
     for (let j = 2; j <= 22; j++) {
-
+        
         for (let i = 0; i <= 9; i++) {
 
             tmp = Math.abs(table[j][i]);
             pix.beginPath();
             pix.lineWidth = 1;
-
+            
             if (sMov.some(function (s) {
                 return s[0] === j && s[1] === i;
             })) {
-                if (table[j][i] <= 0) {
-                    pix.strokeStyle = "black";
-                    pix.fillStyle = createColor(0);
-                } else {
+                //绘制阴影
+                //如果tmp等于0，说明当前方块为空，可以显示阴影。相反，则说明方块区域有正在移动的方块，给予优先显示。
+                if (tmp === 0) {
                     pix.strokeStyle = "#FFF";
-                    pix.fillStyle = createColor(Math.abs(table[j][i]));
+                    pix.rect(i * size + 1, j * size - 60 + 1, 18, 18);
+                    pix.stroke();
+                } else {
+                    //pix.strokeStyle = createColor(tmp);
+                    pix.fillStyle = createColor(tmp);
+                    pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
+                    //pix.stroke();
+                    pix.fill();
                 }
-            } else {
-                pix.strokeStyle = "#FFF";
-                pix.fillStyle = createColor(Math.abs(table[j][i]));
+               
+                //只绘制不为0的方块，这样可以空出背景。
+            } else if (tmp !== 0) {
+                //绘制常规图形
+                //pix.strokeStyle = createColor(tmp);
+                pix.fillStyle = createColor(tmp);
+                pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
+                //pix.stroke();
+                pix.fill();
             }
-            //临时解决方案，搞不懂修改后图形为什么向右上移动一个像素
-            pix.rect(i * size + 1, j * size - 60 + 1, 18, 18);
-            pix.stroke();
-            pix.fill();
         }
     }
     sMov = create4Arr();
@@ -158,7 +162,6 @@ function drawTable() {
 
 let moving = [];
 let old = [];
-
 let line = [];
 let colorId = [];
 
@@ -301,16 +304,26 @@ function checkEnd () {
         gameOver = true;
         gameStart = false;
         startAndPause.innerText = "开始";
-        //ui.gameover.style.display = "block";
+        inTop10Check();
+        return;
+    }
+}
+
+let distanceTop10 = document.querySelector("#u-distancetop10");
+
+function inTop10Check () {
+    if (localData.data.length < 10 || gameScore > localData.data[9][1]) {
         $("#u-score").text(gameScore);
         $("#u-level").text(gameLeval);
         $("#u-lines").text(finishLine);
         ui.enterTop10.style.display = "block";
         screenCover("open");
-        return;
+    } else {
+        ui.gameover.style.display = "block";
+        distanceTop10.innerText = localData.data[9][1] - gameScore;
+        screenCover("open");
     }
 }
-
 
 let deepLock = false;
 
@@ -964,6 +977,13 @@ document.querySelector("#u-enterNameBT").addEventListener("click", function () {
     ui.enterTop10.style.display = "none";
 },false);
 
+
+//-----------------------关于-------------------------------
+
+ui.about = document.querySelector("#about-win");
+document.querySelector("#aboutme").addEventListener("click", function () {
+    ui.about.style.display = "block";
+}, false)
 
 
 

@@ -23,7 +23,7 @@ body {
 #canvas { 
     border : 1px solid #999;
     padding: 2px;
-    background-color: white;
+    background: url(pic/bc001.PNG) no-repeat center;
 }
 
 #scanvas {
@@ -302,11 +302,14 @@ body {
     color : #FFF;
 }
 
-#clearData {
+.table-bottom {
     display: table;
     margin: 0.2em;
+}
+
+.table-bottom a {
     font-size: 0.8em;
-    color: #AAA;
+    color: #CCC;
 }
 
 table {

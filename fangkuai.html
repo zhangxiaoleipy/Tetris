@@ -88,6 +88,7 @@
         </div>
         <div class="t-body">
             <div>游戏结束！</div>
+            <div>距离TOP10还差：<span id="u-distancetop10"></span> 分</div>
         </div>
     </div>
 
@@ -114,7 +115,10 @@
                 <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
                 <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
             </table>
-            <a href="#" id="clearData">重置数据</a>
+            <div class="table-bottom">
+                <a href="#" id="clearData">重置数据</a>
+                <a href="#" id="aboutme">关于</a>
+            </div>
         </div>
     </div>
 
@@ -142,6 +146,19 @@
                     <div class="t-close t-closeBT" id="">算了</div>
             </div>
         </div>
+    </div>
+
+    <div class="t-win" id = "about-win">
+            <div class="t-head">
+                <span class="t-title">关于</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+            <div class="t-body">
+                <div class="content">
+                    <p>作者 ： 张晓雷</p>
+                    <p>邮箱 ： zhangxiaolei@outlook.com</p>
+                </div>
+            </div>
     </div>
 
     <script src="gamejs.js"></script>
