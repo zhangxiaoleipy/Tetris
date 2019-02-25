@@ -6,56 +6,49 @@ body {
     align-items: center;
     width : 95%;
     min-height: 600px;
+    background-color: rgb(20, 20, 20);
 }
 
 #window{
+    display: flex;
+    justify-content: space-between;
     z-index: 1;
     margin: 0;
     padding: 20px;
-    border : 1px solid #999;
+    border : 1px solid #333;
     width : 320px;
     height: 410px;
     border-radius: 3px;
-    background-color: rgb(148, 198, 226);
-    box-shadow: 0 0 2px #888;
 }
 
 #canvas { 
-    border : 1px solid #999;
+    border : 2px solid #999;
     padding: 2px;
-    background: url(pic/bc001.PNG) no-repeat center;
+}
+
+#rightcolumn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height : 400px;
 }
 
 #scanvas {
     padding: 10px;
-    margin-top: 2px;
-    margin-bottom: 10px;
-    background-color: #EEE;
     border-radius: 3px;
     border : 1px solid #999;
-    box-shadow: inset 1px 1px 2px  #AAA, inset -1px -1px 2px #AAA;
-}
-
-#rightbox {
-    float : right;
-    position: relative;
-    height : 400px;
 }
 
 .panelLabel {
-    color : #EEE;
-    font-weight: bold;
-    text-shadow: 1px 1px #555;
+    font-size: 0.9em;
+    color : #999;
 }
 
 .numberStyle{
-    border : 1px solid #999;
-    margin-top: 2px;
     padding: 3px;
-    border-radius: 5px;
+    border-radius: 3px;
     height: 22px;
     background-color: #EEE;
-    box-shadow: inset 1px 1px 2px  #AAA, inset -1px -1px 2px #AAA;
 }
 
 .n0{
@@ -157,25 +150,8 @@ body {
 }
 
 #control {
-    position: absolute;
-    height: 30px;
-    top : 375px;
-    width : 105px;
-    font-weight: normal;
-    color : #555;
-    text-shadow: none;
-}
-
-#startPause, #reset{
-    border : 1px solid #999;
-    width : 39px;
-    font-size: 90%;
-    font-weight: bold;
-    text-align: center;
-    border-radius: 3px;
-    padding : 3px;
-    background-color: #EEE;
-    box-shadow: 1px 1px 1px #555;
+    display: flex;
+    justify-content: space-between;
 }
 
 #startPause {
@@ -192,17 +168,6 @@ body {
     background-color: pink;
 }
 
-#startPause:active,
-#reset:active {
-    box-shadow: none;
-}
-
-#startPause:hover,
-#reset:hover{
-    cursor: pointer;
-}
-
-
 #backGroundCover{
     z-index: 5;
     display: none;
@@ -215,9 +180,8 @@ body {
     position: absolute;
     display: none;
     border-radius: 3px;
-    background-color: rgb(233, 233, 233);
-    border : 1px solid #999;
-    box-shadow: 0 0 10px #555555;
+    background-color: #333;
+    border : 1px solid #555;
 }
 
 .t-head{
@@ -228,26 +192,24 @@ body {
 
 .t-title{
     font-weight: bold;
-    text-shadow: 1px 1px #BBB;
-    color : #666;
+    color : #999;
 }
 
 /*  右上角的X  */
 
 .t-closeX{
+    color : #999;
     text-align: center;
-    border : 1px solid #555;
     border-radius: 3px;
     width : 1.4em;
     height: 1.4em;
     line-height: 1.4em;
     cursor: pointer;
-    background-color: pink;
-    box-shadow: 1px 1px #999;
+    border : 1px solid #555;
 }
 
-.t-closeX:active{
-    box-shadow: none;
+.t-closeX:hover{
+    border : 1px solid #999;
 }
 
 .t-body{
@@ -255,15 +217,14 @@ body {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    color : #555;
+    color : #FFF;
     margin: 0.3em;
     padding: 0.5em;
     min-height: 10em;
     min-width: 18em;
-    background-color: #FFF;
     border-radius: 5px;
-    border : 1px solid #DDD;
-    box-shadow: inset 1px 1px 2px #EEE;
+    border : 1px solid #333;
+    background-color: #666;
 }
 
 .t-okAndNo {
@@ -272,22 +233,17 @@ body {
     width : 10em;
 }
 
-.t-closeBT{
+.t-button{
+    color : #000;
     text-align: center;
     font-weight: bold;
     font-size: 0.9em;
     width : 2.8em;
-    border : 1px solid #999;
     padding: 0.15em;
     margin-bottom: 0.5em;
     border-radius: 3px;
     cursor: pointer;
     background-color: #FFF;
-    box-shadow: 1px 1px 1px #BBB;
-}
-
-.t-closeBT:active{
-    box-shadow: none;
 }
 
 #table-border{

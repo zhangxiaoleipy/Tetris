@@ -101,10 +101,10 @@ function smallDisplay(t, c) {
     tmp.forEach(function (n) {
         pix2.beginPath();
         pix2.lineWidth = 1;
-        pix2.strokeStyle = "#EEE";
+        /*pix2.strokeStyle = "#EEE";*/
         pix2.fillStyle = createColor(c);
-        pix2.rect(c === 1 || c === 2 ? n[1] * 20 + 1 : n[1] * 20 + 11, n[0] * 20 - 20 + 1, 18, 18);
-        pix2.stroke();
+        pix2.rect(c === 1 || c === 2 ? n[1] * 20 + 1 : n[1] * 20 + 11, n[0] * 20 - 20 + 1, 19, 19);
+        /*pix2.stroke();*/
         pix2.fill();
     })
 }

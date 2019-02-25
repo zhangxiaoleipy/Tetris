@@ -14,47 +14,55 @@
         <canvas id="canvas" width=200 height=400></canvas>
 
         <!--右侧信息板-->
-        <div id="rightbox">
+        <div id="rightcolumn">
 
-            <span class = "panelLabel">下一个</span><br/>
-            <canvas id="scanvas" width=80 height=40></canvas><br/>
-
-            <span class="panelLabel">得分</span>
-            <div id="digtalNumber" class="numberStyle">
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="n0"></div>
+            <div class="rightbox">
+                <span class = "panelLabel">NEXT</span><br/>
+                <canvas id="scanvas" width=80 height=40></canvas><br/>
             </div>
 
-            <span class="panelLabel">行数</span>
-            <div id="line" class="numberStyle">
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="n0"></div>
+            <div class="rightbox">
+                <span class="panelLabel">SCORE</span>
+                <div id="digtalNumber" class="numberStyle">
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="n0"></div>
+                </div>
             </div>
 
-            <span class="panelLabel">关卡</span>
-            <div id="leval" class="numberStyle">
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="ns"></div>
-                <div class="n0"></div>
+            <div class="rightbox">
+                <span class="panelLabel">LINES</span>
+                <div id="line" class="numberStyle">
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="n0"></div>
+                </div>
             </div>
 
-            <div id="control">
-                <div id="startPause">开始</div>
-                <div id="reset">重来</div>
+            <div class="rightbox">
+                <span class="panelLabel">LEVEL</span>
+                <div id="leval" class="numberStyle">
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="ns"></div>
+                    <div class="n0"></div>
+                </div>
             </div>
 
             <a style="font-size: 0.7em; color : #FFF" href="#" id="infotest">TOP10</a>
+
+            <div id="control">
+                <div id="startPause" class="t-button">开始</div>
+                <div id="reset" class="t-button">重来</div>
+            </div>
 
         </div>
         
@@ -73,8 +81,8 @@
         <div class="t-body">
             <div>游戏正在进行，你确定退出吗？</div>
             <div class="t-okAndNo">
-                <div class="t-closeBT" id="u-resetBT">确定</div>
-                <div class="t-close t-closeBT">算了</div>
+                <div class="t-button" id="u-resetBT">确定</div>
+                <div class="t-close t-button">算了</div>
             </div>
         </div>
     </div>
@@ -142,8 +150,8 @@
             </div>
 
             <div class="t-okAndNo">
-                    <div class="t-closeBT" id="u-enterNameBT">保存</div>
-                    <div class="t-close t-closeBT" id="">算了</div>
+                    <div class="t-button" id="u-enterNameBT">保存</div>
+                    <div class="t-close t-button" id="">算了</div>
             </div>
         </div>
     </div>
