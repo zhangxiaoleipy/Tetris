@@ -19,8 +19,6 @@ function toNegative (n) {
     return n <= 0 ? n : -n;
 }
 
-
-
 function create4Arr () {
     return [[0,0], [0,0], [0,0], [0,0]];
 }
@@ -35,6 +33,7 @@ function createColor(c) {
         case 5: return "#06C";
         case 6: return "#909";
         case 7: return "#F00";
+        case 9: return "gold";
         default:
             console.error("createColor Error");
     }
@@ -210,11 +209,11 @@ function shadow () {
 }
 
 
+let animateLook = false;
 
 function downLoop() {
 
     //此处不能有 if (!moving.length)
-
 
     if (!gameStart) { return };
    
@@ -242,21 +241,8 @@ function downLoop() {
          table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
         })
 
-        getScore();
-
-        drawTable();
- 
-        checkEnd();
-
-        moving = [];
-
-        old = [];
-
-        stopLoop();                //暂停，并终止循环的所有loop
-        createNewCube();           //直接创建一个新的方块
-        restartLoop(); 
-        
-
+        !animateLook && checkAndCreate();   
+    
         return;
     }
 
@@ -330,7 +316,6 @@ function movoToDeep() {
     此操作的目的是，当一个方块下降到自己和自己的投影交叉的位置时，可以先清理掉旧数据，避免了moving和old数据重合引起的问题
     */
 
-
     if (!gameStart) { return };
     if (!moving.length) { return };
     if (deepLock) { return };
@@ -358,15 +343,8 @@ function movoToDeep() {
                 moving.forEach(function (i, index) {
                  table[i[0]][i[1]] = toNegative(tmpValue[index]);
                 })
-               
-                getScore();
-                drawTable();
-                checkEnd();
-                moving = [];
-                old = [];
-                stopLoop();                
-                createNewCube();           
-                restartLoop();             
+
+                !animateLook && checkAndCreate();
                 deepLock = true;
                 return;
             }
@@ -374,6 +352,101 @@ function movoToDeep() {
         moveOneStep(moving, "down");
     }
 }
+
+//次函数的目的是在得分的时候，能有0.3毫秒的延时停顿，搞一个删除得分方块的“动画”。
+//没有产生得分，进入正常的产生新的方块流程
+//如果有的分，则先将数组数据替换为临时过度色，然后0.3秒后删除、补充，重绘。接着完成后续标准流程。
+function checkAndCreate() {
+
+    //直接返回的是checkSave数组
+    let arr = getScore();
+
+    let h = arr.length;
+    //如果h为0，则进入正常的创造新的方块流程
+    if (!h) {
+
+        drawTable();
+        checkEnd();
+
+        moving = [];
+        old = [];
+
+        stopLoop();
+        createNewCube();
+        restartLoop();
+
+    } else {
+        //进入延时显示流程
+
+        animateLook = true;
+
+        stopLoop();
+
+        arr.forEach(function (i) {
+            table.splice(i, 1, [9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
+        })
+
+        drawTable();
+
+        moving = [];
+
+        old = [];
+
+        setTimeout(function () {
+
+            finishLine += h;
+
+            switch (h) {
+
+                case 1: {
+                    gameScore += 100 * gameLeval;
+                } break;
+
+                case 2: {
+                    gameScore += 400 * gameLeval;
+                } break;
+
+                case 3: {
+                    gameScore += 900 * gameLeval;
+                } break;
+
+                case 4: {
+                    gameScore += 1600 * gameLeval;
+                } break;
+
+                default: {
+                    console.warn("score error");
+                }
+            }
+
+            arr.forEach(function (i) {
+                table.splice(i, 1);
+            })
+
+            while (h--) {
+                table.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            }
+
+            drawTable();
+
+            checkEnd();
+
+            createNewCube();
+
+            restartLoop();
+
+            digtalNumber(gameScore, scoreDisplay);
+
+            digtalNumber(finishLine, fineshLineDisplay);
+
+            changeLevalAndDisplay();
+
+            animateLook = false;
+
+        }, 200)
+    }
+}
+
 
 function refreshData() {
     shadow();
@@ -408,7 +481,6 @@ function moveOneStep(m, to) {
         console.error("function error : moveOneStep")
     }
 }
-
 
 function rotate() {
 
@@ -751,52 +823,9 @@ function getScore () {
             checkSave.push(i);
         }
     }
+    
+    return checkSave;
 
-    h = checkSave.length;
-
-    if (h) {
-
-        //h为真，说明 score 和 line 的必然刷新
-
-        finishLine += h;
-
-        switch (h) {
-
-            case 1 : {
-                gameScore += 100 * gameLeval;
-            } break;
-
-            case 2 : {
-                gameScore += 400 * gameLeval;
-            } break;
-
-            case 3 : {
-                gameScore += 900 * gameLeval;
-            } break;
-
-            case 4 : {
-                gameScore += 1600 * gameLeval;
-            } break;
-
-            default : {
-                console.warn("score error");
-            }
-        }
-
-        digtalNumber(gameScore, scoreDisplay);
-
-        digtalNumber(finishLine, fineshLineDisplay);
-
-        changeLevalAndDisplay();
-
-        checkSave.forEach(function (i) {
-            table.splice(i, 1);
-        })
-
-        while (h --) {
-            table.unshift([0,0,0,0,0,0,0,0,0,0])
-        }
-    }
 }
 
 //初始游戏网格界面
