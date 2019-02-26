@@ -19,13 +19,7 @@ function toNegative (n) {
     return n <= 0 ? n : -n;
 }
 
-function random (begin, end) {
-    return parseInt(Math.random () * (end - begin + 1) + begin);
-}
 
-function rand () {
-    return random(1, 7);
-}
 
 function create4Arr () {
     return [[0,0], [0,0], [0,0], [0,0]];
