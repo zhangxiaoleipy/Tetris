@@ -17,12 +17,12 @@
         <div id="rightcolumn">
 
             <div class="rightbox">
-                <span class = "panelLabel">NEXT</span><br/>
+                <span class = "panelLabel">下一个</span><br/>
                 <canvas id="scanvas" width=80 height=40></canvas><br/>
             </div>
 
             <div class="rightbox">
-                <span class="panelLabel">SCORE</span>
+                <span class="panelLabel">得分</span>
                 <div id="digtalNumber" class="numberStyle">
                     <div class="ns"></div>
                     <div class="ns"></div>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="rightbox">
-                <span class="panelLabel">LINES</span>
+                <span class="panelLabel">行数</span>
                 <div id="line" class="numberStyle">
                     <div class="ns"></div>
                     <div class="ns"></div>
@@ -46,7 +46,7 @@
             </div>
 
             <div class="rightbox">
-                <span class="panelLabel">LEVEL</span>
+                <span class="panelLabel">关卡</span>
                 <div id="leval" class="numberStyle">
                     <div class="ns"></div>
                     <div class="ns"></div>
@@ -57,7 +57,9 @@
                 </div>
             </div>
 
-            <a style="font-size: 0.7em; color : #FFF" href="#" id="infotest">TOP10</a>
+            <div>
+                <a href="#" id="infotest">英雄榜</a>
+            </div>
 
             <div id="control">
                 <div id="startPause" class="t-button">开始</div>
@@ -68,7 +70,7 @@
         
     </div>
 
-    <!--弹出窗口背景遮挡---->
+    <!--弹出窗口背景遮挡-->
     <div id="backGroundCover"></div>
 
     <!--确定是否重来-->
@@ -96,7 +98,7 @@
         </div>
         <div class="t-body">
             <div>游戏结束！</div>
-            <div>距离TOP10还差：<span id="u-distancetop10"></span> 分</div>
+            <div>距离英雄榜还差：<span id="u-distancetop10"></span> 分</div>
         </div>
     </div>
 
@@ -105,13 +107,13 @@
     <div class="t-win" id="u-info">
 
         <div class="t-head">
-            <span class="t-title">TOP 10</span>
+            <span class="t-title">英雄榜 - 前十名</span>
             <span class="t-close t-closeX">×</span>
         </div>
 
         <div id="table-border">
             <table id="table-list">
-                <tr><th>序列</th><th>昵称</th><th>分数</th><th>关卡</th><th>行数</th></tr>
+                <tr><th>名次</th><th>昵称</th><th>得分</th><th>关卡</th><th>行数</th></tr>
                 <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
                 <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
                 <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
@@ -138,7 +140,7 @@
         </div>
         <div class="t-body">
 
-            <div>TOP10</div>
+            <div>英雄榜</div>
             <div style="font-size : 1.5em; color : orange">请输入大名</div>
 
             <input id="u-enterName" type="text" />
@@ -163,8 +165,10 @@
             </div>
             <div class="t-body">
                 <div class="content">
-                    <p>作者 ： 张晓雷</p>
-                    <p>邮箱 ： zhangxiaolei@outlook.com</p>
+                    <ul>
+                        <li>作者 ： 张晓雷</li>
+                        <li>邮箱 ： zhangxiaolei@outlook.com</li>
+                    </ul>
                 </div>
             </div>
     </div>
