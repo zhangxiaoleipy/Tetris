@@ -33,16 +33,7 @@ function CreateTimer() {
     }
 }
 
-
-/*
-
-方块随机算法
-
-玩的时候发现有时候方块能连续重复三四个，感觉可能随机算法有问题,所以在知乎上提问了关于俄罗斯方块随机的算法。根据 farter yang 所说的 Bag7算法，我做了简单的实现。
-
-    “目前的官方做法叫Bag7算法，简单讲就是每次出7块，一样一块，这样出得就异常均匀，某块连续出最多2个，连续不出次数不会超过12次（7*2-2）。”
-
-*/
+//方块随机算法
 
 function random (begin, end) {
     return parseInt(Math.random () * (end - begin + 1) + begin);
@@ -83,4 +74,62 @@ function rand() {
     return t + 1;
 
 }
+
+
+//对象工厂模式的选择器函数，用来最简单的模拟jQuery
+
+function $(selector, context) {
+
+    let core = Object.create(null);
+    core.element = Object.create(null);
+
+    if (typeof selector === "string") {
+        core.element = (context || document).querySelector(selector);
+    } else {
+        core.element = selector;
+    }
+
+    core.ele = function () {
+        return this.element;
+    }
+
+    core.hide = function () {
+        this.element.style.display = "none";
+    };
+
+    core.show = function () {
+        this.element.style.display = "block";
+    };
+
+    core.click = function (fn) {
+        this.element.addEventListener("click", fn, false);
+    };
+
+    core.css = function (val) {
+
+        let tmp;
+        if (typeof val === "string") {
+            val = val.split(" ").join("");
+            tmp = val.split(":");
+            this.element.style[tmp[0]] = tmp[1];
+        } else {
+            for (let key in val) {
+                this.element.style[key] = val[key];
+            }
+        }
+    }
+
+    core.text = function (val) {
+        this.element.innerText = val;
+    };
+
+    core.empty = function () {
+        this.element.innerHTML = "";
+    }
+
+    return core;
+
+}
+
+
 

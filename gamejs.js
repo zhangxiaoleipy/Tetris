@@ -309,13 +309,6 @@ let deepLock = false;
 
 function movoToDeep() {
 
-    /*
-    old 将自己的坐标和对应的table的数据交给tmp和tmpValue保管
-    然后自己负责清理旧的坐标
-    然后tmp和tmpValue将自己的坐标和数据求负交给已经生成的moving新坐标
-    此操作的目的是，当一个方块下降到自己和自己的投影交叉的位置时，可以先清理掉旧数据，避免了moving和old数据重合引起的问题
-    */
-
     if (!gameStart) { return };
     if (!moving.length) { return };
     if (deepLock) { return };
@@ -324,22 +317,22 @@ function movoToDeep() {
 
     let tmp = create4Arr();
 
-    let tmpValue = [];
-
     copyAtoB(old, tmp);
 
+    let tmpValue = [];
+    //将 old 坐标对应的数值给 tmpValue
     old.forEach(function (i) {
         tmpValue.push(table[i[0]][i[1]]);
     })
 
-    for (let x = 2; x <= 22; x++) {
+    for (let x = 0; x <= 22; x++) {
         for (let i of moving) {
             if (i[0] === 22 || table[i[0] + 1][i[1]] < 0) {
-
+                //将 old 的数值清零
                 old.forEach(function (i) {
                     table[i[0]][i[1]] = 0;
                 })
-
+                // 将 old 之前交给 tmpValue 的数值复制到 moving 对应的table
                 moving.forEach(function (i, index) {
                  table[i[0]][i[1]] = toNegative(tmpValue[index]);
                 })
@@ -356,6 +349,7 @@ function movoToDeep() {
 //次函数的目的是在得分的时候，能有0.3毫秒的延时停顿，搞一个删除得分方块的“动画”。
 //没有产生得分，进入正常的产生新的方块流程
 //如果有的分，则先将数组数据替换为临时过度色，然后0.3秒后删除、补充，重绘。接着完成后续标准流程。
+
 function checkAndCreate() {
 
     //直接返回的是checkSave数组
