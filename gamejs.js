@@ -23,6 +23,19 @@ function create4Arr () {
     return [[0,0], [0,0], [0,0], [0,0]];
 }
 
+function toLower(t) {
+    if (t.length === 1) {
+        if (/^[A-Z]$/.test(t)) {
+            return t.toLowerCase();
+        } else {
+            return t;
+        }
+    } else {
+        return t;
+    }
+}
+
+
 function createColor(c) {
     switch (c) {
         case 0: return "#FFF";
@@ -568,34 +581,38 @@ function rotate() {
 
 let gameStart = false;
 let gameOver = true;
-
+//屏蔽系统连续触发锁
 let leftLock = false;
 let rightLock = false;
 let downLock = false;
+//定时
+let leftStop;
+let rightStop;
+let donwStop;
 
-/*
-移动函数
-*/
+document.onkeydown = function (k) {
 
-document.onkeypress = function (k) {
+    let key = toLower(k.key);
 
-    if (k.key === "a" || k.key === "A") {
+    if ( key === "a" ) {
 
         if (!leftLock) {
+            clearInterval(rightStop);
             moveToLeftOrRight("left");
             moveLeftPlus("left");
             leftLock = true;
         }
 
-    } else if (k.key === "d" || k.key === "D") {
+    } else if ( key === "d") {
 
         if (!rightLock) {
+            clearInterval(leftStop);
             moveToLeftOrRight("right");
             moveRightPlus("right");
             rightLock = true;
         }
 
-    } else if (k.key === "s" || k.key === "S") {
+    } else if ( key === "s" ) {
     
         if (!downLock) {
             stopLoop();  //防止downloop循环和向下按钮的动作相互重合
@@ -604,28 +621,33 @@ document.onkeypress = function (k) {
             downLock = true;
         }
 
-    } else if (k.key === "w" || k.key === "W") {
+    } else if ( key === "w" ) {
+
         movoToDeep();
         deepLock = true;
-    } else if (k.key === "k" || k.key === "K") {
+
+    } else if ( key === "k" ) {
+
         rotate();
+
     }
 }
 
-let leftStop;
-let rightStop;
-let donwStop;
+
 
 document.onkeyup = function (k) {
-    if (k.key === "w" || k.key === "W") {
+
+    let key = toLower(k.key);
+    
+    if (key === "w") {
         deepLock = false;
-    } else if (k.key === "a" || k.key === "A") {
+    } else if (key === "a") {
         clearInterval(leftStop);
         leftLock = false;
-    } else if (k.key === "d" || k.key === "D") {
+    } else if (key === "d") {
         clearInterval(rightStop);
         rightLock = false;
-    } else if (k.key === "s" || k.key === "S") {
+    } else if (key === "s") {
         clearInterval(donwStop);
         restartLoop();
         downLock = false;
