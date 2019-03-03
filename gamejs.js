@@ -598,7 +598,7 @@ document.onkeydown = function (k) {
 
     let key = toLower(k.key);
 
-    if ( key === "a" ) {
+    if ( key === keyboard.left ) {
 
         if (!leftLock) {
             clearTimeout(right1stStop);
@@ -608,7 +608,7 @@ document.onkeydown = function (k) {
             leftLock = true;
         }
 
-    } else if ( key === "d") {
+    } else if ( key === keyboard.right) {
 
         if (!rightLock) {
             clearTimeout(left1stStop);
@@ -618,7 +618,7 @@ document.onkeydown = function (k) {
             rightLock = true;
         }
 
-    } else if ( key === "s" ) {
+    } else if ( key === keyboard.down ) {
     
         if (!downLock) {
             stopLoop();  //防止downloop循环和向下按钮的动作相互重合
@@ -627,12 +627,12 @@ document.onkeydown = function (k) {
             downLock = true;
         }
 
-    } else if ( key === "w" ) {
+    } else if ( key === keyboard.deep ) {
 
         movoToDeep();
         deepLock = true;
 
-    } else if ( key === "k" ) {
+    } else if ( key === keyboard.rotate ) {
 
         rotate();
 
@@ -645,17 +645,17 @@ document.onkeyup = function (k) {
 
     let key = toLower(k.key);
     
-    if (key === "w") {
+    if (key === keyboard.deep) {
         deepLock = false;
-    } else if (key === "a") {
+    } else if (key === keyboard.left) {
         clearTimeout(left1stStop);
         clearInterval(leftStop);
         leftLock = false;
-    } else if (key === "d") {
+    } else if (key === keyboard.right) {
         clearTimeout(right1stStop);
         clearInterval(rightStop);
         rightLock = false;
-    } else if (key === "s") {
+    } else if (key === keyboard.down) {
         clearTimeout(down1stStop);
         clearInterval(donwStop);
         restartLoop();
@@ -933,15 +933,25 @@ document.querySelector("#u-resetBT").addEventListener("click", function () {
 
 //初始数据
 let initGameDate = {
-    data : []
+    data : [],
+    keyboard : {
+        deep : "w",
+        left : "a",
+        right : "d",
+        down : "s",
+        rotate : "k"
+    }
 } 
 //载入数据
 let localData = JSON.parse(localStorage.getItem("TetrisGameData"));
 
-//如果载入的数据为空，则将其指向初始的数据
-if (!localData) {
+
+//如果localData.keyboard处于未定义状态，则说明本地数据为空，将其指向初始的数据。
+if (localData.keyboard === undefined) {
     localData = initGameDate;
 }
+
+let keyboard = localData.keyboard;
 
 //将比赛记录保存到浏览器
 function saveData() {
@@ -1010,6 +1020,10 @@ $("#infotest").click(function () {
     screenCover("open");
 })
 
+document.querySelector("#optiontest").addEventListener("click", function () {
+    document.querySelector("#option").style.display = "block";
+    screenCover("open");
+})
 
 document.querySelector("#clearData").addEventListener("click", function () {
     if (confirm("清除所有数据 ?")) {
@@ -1039,5 +1053,33 @@ document.querySelector("#aboutme").addEventListener("click", function () {
 }, false)
 
 
+
+
+
+//按键录入，主要目的是能够支持方向键录入
+document.querySelectorAll(".opt-i").forEach(function (item) {
+    item.addEventListener("click", function () {
+        this.value = "";
+        this.onkeydown = function (k) {
+            if (k.key.length === 1) {
+                this.value = "";
+            } else {
+                this.value = k.key;
+            }
+        }
+    })
+})
+
+
+document.querySelector("#opt-bt-yes").addEventListener("click", function () {
+    keyboard.deep = document.querySelector("#opt-deep").value;
+    keyboard.left = document.querySelector("#opt-left").value;
+    keyboard.down = document.querySelector("#opt-down").value;
+    keyboard.right = document.querySelector("#opt-right").value;
+    keyboard.rotate = document.querySelector("#opt-rotate").value;
+    document.querySelector("#option").style.display = "none";
+    saveData();
+    screenCover("close");
+})
 
 
