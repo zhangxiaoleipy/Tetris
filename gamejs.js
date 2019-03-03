@@ -590,6 +590,10 @@ let leftStop;
 let rightStop;
 let donwStop;
 
+let left1stStop;
+let right1stStop;
+let down1stStop;
+
 document.onkeydown = function (k) {
 
     let key = toLower(k.key);
@@ -597,6 +601,7 @@ document.onkeydown = function (k) {
     if ( key === "a" ) {
 
         if (!leftLock) {
+            clearTimeout(right1stStop);
             clearInterval(rightStop);
             moveToLeftOrRight("left");
             moveLeftPlus("left");
@@ -606,6 +611,7 @@ document.onkeydown = function (k) {
     } else if ( key === "d") {
 
         if (!rightLock) {
+            clearTimeout(left1stStop);
             clearInterval(leftStop);
             moveToLeftOrRight("right");
             moveRightPlus("right");
@@ -642,12 +648,15 @@ document.onkeyup = function (k) {
     if (key === "w") {
         deepLock = false;
     } else if (key === "a") {
+        clearTimeout(left1stStop);
         clearInterval(leftStop);
         leftLock = false;
     } else if (key === "d") {
+        clearTimeout(right1stStop);
         clearInterval(rightStop);
         rightLock = false;
     } else if (key === "s") {
+        clearTimeout(down1stStop);
         clearInterval(donwStop);
         restartLoop();
         downLock = false;
@@ -656,22 +665,27 @@ document.onkeyup = function (k) {
 
 
 function moveLeftPlus(val) {
-    leftStop = setInterval(function () {
-        moveToLeftOrRight(val)
+    left1stStop = setTimeout(function () {
+        leftStop = setInterval(function () {
+            moveToLeftOrRight(val)
+        }, 65)
     }, 100)
 }
 
 function moveRightPlus(val) {
-    rightStop = setInterval(function () {
-        moveToLeftOrRight(val)
+    right1stStop = setTimeout(function () {
+        rightStop = setInterval(function () {
+            moveToLeftOrRight(val)
+        }, 65)
     }, 100)
 }
 
-
 function moveDownPlus () {
-    donwStop = setInterval(function () {
-        downLoop();
-    }, 100)
+    down1stStop = setTimeout(function () {
+        donwStop = setInterval(function () {
+            downLoop();
+        }, 100)
+    }, 65)
 }
 
 
