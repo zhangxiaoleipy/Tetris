@@ -186,25 +186,27 @@
 
                         <div class="opt-leftbox">
 
-                                <div class="opt-up">到底<br/> <input id="opt-deep" class="opt-i" type="text" value="w"/> </div>
+                                <div class="opt-up"><span>到底</span><input id="opt-deep" class="opt-i" type="text" value="w"/> </div>
             
                                 <div class="opt-other">
-                                        <div>向左 <input id="opt-left" class="opt-i" type="text" value="a"/></div>
-                                        <div>向下 <input id="opt-down" class="opt-i" type="text" value="s"/></div>
-                                        <div>向右 <input id="opt-right" class="opt-i" type="text" value="d"/></div>
+
+                                        <div><span>向左</span><input id="opt-left" class="opt-i" type="text" value="a"/></div>
+                                        <div><span>向下</span><input id="opt-down" class="opt-i" type="text" value="s"/></div>
+                                        <div><span>向右</span><input id="opt-right" class="opt-i" type="text" value="d"/></div>
+
                                 </div>
             
                             </div>
             
                             <div class="opt-rightbox">
                                 <div>顺时旋转 <input id="opt-rotate" class="opt-i" type="text" value="k"/></div>
-                                <div>逆时旋转 <input class="opt-i" type="text" value="---"/></div>
+                                <div>逆时旋转 <input class="opt-i" type="text" disabled="disabled" value="暂时缺失"/></div>
                             </div>
                 </div>
 
                 <div class="opt-item"> 
-                    <div>首次延时<input value="100" type="text"/>ms</div>
-                    <div>重复延时<input value="65" type="text"/>ms</div>
+                    <div>首次延时 <input id="opt-firstdelay" value="" type="text"/> ms</div>
+                    <div>重复延时 <input id="opt-repedelay" value="" type="text"/> ms</div>
                 </div>
 
                 <div class="opt-control">
@@ -216,7 +218,6 @@
 
         </div>
     </div>
-
 
 
     <script src="gamejs.js"></script>

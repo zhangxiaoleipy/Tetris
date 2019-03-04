@@ -336,7 +336,7 @@ th, td {
     display: inline-block;
     width : 5.5em;
     text-align: center;
-    background-color: #999;
+    background-color: #888;
     border : 1px solid #666;
 }
 
@@ -358,11 +358,18 @@ th, td {
     height: 100px;
 }
 
+.opt-up {
+    display: flex;
+    flex-direction: column;
+}
+
 .opt-other {
     display: flex;
 }
 
 .opt-other>div{
+    display: flex;
+    flex-direction: column;
     padding: 2px;
 }
 

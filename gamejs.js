@@ -668,24 +668,24 @@ function moveLeftPlus(val) {
     left1stStop = setTimeout(function () {
         leftStop = setInterval(function () {
             moveToLeftOrRight(val)
-        }, 65)
-    }, 100)
+        }, keyboard.repeDelay)
+    }, keyboard.firstDelay)
 }
 
 function moveRightPlus(val) {
     right1stStop = setTimeout(function () {
         rightStop = setInterval(function () {
             moveToLeftOrRight(val)
-        }, 65)
-    }, 100)
+        }, keyboard.repeDelay)
+    }, keyboard.firstDelay)
 }
 
 function moveDownPlus () {
     down1stStop = setTimeout(function () {
         donwStop = setInterval(function () {
             downLoop();
-        }, 100)
-    }, 65)
+        }, keyboard.repeDelay)
+    }, keyboard.firstDelay);
 }
 
 
@@ -939,17 +939,22 @@ let initGameDate = {
         left : "a",
         right : "d",
         down : "s",
-        rotate : "k"
+        rotate : "k",
+        firstDelay : 100,
+        repeDelay : 65
     }
 } 
 //载入数据
-let localData = JSON.parse(localStorage.getItem("TetrisGameData"));
+
+let localData;
 
 
-//如果localData.keyboard处于未定义状态，则说明本地数据为空，将其指向初始的数据。
-if (localData.keyboard === undefined) {
+localData = JSON.parse(localStorage.getItem("TetrisGameData"));
+
+if (!localData) {
     localData = initGameDate;
 }
+
 
 let keyboard = localData.keyboard;
 
@@ -959,6 +964,8 @@ function saveData() {
         if (localData) {
             localStorage.setItem("TetrisGameData", JSON.stringify(localData))
         }
+    } else {
+        console.error("存储数据失败 程序未找到 window.localStorage")
     }
 }
 
@@ -1020,15 +1027,31 @@ $("#infotest").click(function () {
     screenCover("open");
 })
 
+ui.deep = document.querySelector("#opt-deep");
+ui.left = document.querySelector("#opt-left");
+ui.down = document.querySelector("#opt-down");
+ui.right = document.querySelector("#opt-right");
+ui.rotate = document.querySelector("#opt-rotate");
+ui.firstDelay = document.querySelector("#opt-firstdelay");
+ui.repeDelay = document.querySelector("#opt-repedelay");
+
+
 document.querySelector("#optiontest").addEventListener("click", function () {
     document.querySelector("#option").style.display = "block";
+    ui.deep.value = keyboard.deep;
+    ui.left.value = keyboard.left;
+    ui.down.value = keyboard.down;
+    ui.right.value = keyboard.right;
+    ui.rotate.value = keyboard.rotate;
+    ui.firstDelay.value = keyboard.firstDelay;
+    ui.repeDelay.value = keyboard.repeDelay;
     screenCover("open");
 })
 
 document.querySelector("#clearData").addEventListener("click", function () {
     if (confirm("清除所有数据 ?")) {
         localData.data = [];
-        saveData();
+        localStorage.clear();
         clearInfo();
     }
 },false)
@@ -1053,12 +1076,12 @@ document.querySelector("#aboutme").addEventListener("click", function () {
 }, false)
 
 
-
-
+let inputTmp = "";
 
 //按键录入，主要目的是能够支持方向键录入
 document.querySelectorAll(".opt-i").forEach(function (item) {
     item.addEventListener("click", function () {
+        inputTmp = this.value;
         this.value = "";
         this.onkeydown = function (k) {
             if (k.key.length === 1) {
@@ -1070,13 +1093,23 @@ document.querySelectorAll(".opt-i").forEach(function (item) {
     })
 })
 
+document.querySelectorAll(".opt-i").forEach(function (item) {
+    item.onblur = function () {
+        if (this.value === "") {
+            this.value = inputTmp;
+        }
+    }
+})
+
 
 document.querySelector("#opt-bt-yes").addEventListener("click", function () {
-    keyboard.deep = document.querySelector("#opt-deep").value;
-    keyboard.left = document.querySelector("#opt-left").value;
-    keyboard.down = document.querySelector("#opt-down").value;
-    keyboard.right = document.querySelector("#opt-right").value;
-    keyboard.rotate = document.querySelector("#opt-rotate").value;
+    keyboard.deep = ui.deep.value;
+    keyboard.left = ui.left.value;
+    keyboard.down = ui.down.value;
+    keyboard.right = ui.right.value;
+    keyboard.rotate = ui.rotate.value;
+    keyboard.firstDelay = parseInt(ui.firstDelay.value);
+    keyboard.repeDelay = parseInt(ui.repeDelay.value);
     document.querySelector("#option").style.display = "none";
     saveData();
     screenCover("close");
