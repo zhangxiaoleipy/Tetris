@@ -22,7 +22,7 @@ function toNegative (n) {
 function create4Arr () {
     return [[0,0], [0,0], [0,0], [0,0]];
 }
-
+/*
 function toLower(t) {
     if (t.length === 1) {
         if (/^[A-Z]$/.test(t)) {
@@ -34,6 +34,7 @@ function toLower(t) {
         return t;
     }
 }
+*/
 
 
 function createColor(c) {
@@ -596,7 +597,7 @@ let down1stStop;
 
 document.onkeydown = function (k) {
 
-    let key = toLower(k.key);
+    let key = k.key;
 
     if ( key === keyboard.left ) {
 
@@ -643,7 +644,7 @@ document.onkeydown = function (k) {
 
 document.onkeyup = function (k) {
 
-    let key = toLower(k.key);
+    let key = k.key;
     
     if (key === keyboard.deep) {
         deepLock = false;
