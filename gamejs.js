@@ -22,7 +22,7 @@ function toNegative (n) {
 function create4Arr () {
     return [[0,0], [0,0], [0,0], [0,0]];
 }
-/*
+
 function toLower(t) {
     if (t.length === 1) {
         if (/^[A-Z]$/.test(t)) {
@@ -34,7 +34,7 @@ function toLower(t) {
         return t;
     }
 }
-*/
+
 
 
 function createColor(c) {
@@ -597,7 +597,7 @@ let down1stStop;
 
 document.onkeydown = function (k) {
 
-    let key = k.key;
+    let key = toLower(k.key);
 
     if ( key === keyboard.left ) {
 
@@ -644,7 +644,7 @@ document.onkeydown = function (k) {
 
 document.onkeyup = function (k) {
 
-    let key = k.key;
+    let key = toLower(k.key);
     
     if (key === keyboard.deep) {
         deepLock = false;
@@ -1104,11 +1104,11 @@ document.querySelectorAll(".opt-i").forEach(function (item) {
 
 
 document.querySelector("#opt-bt-yes").addEventListener("click", function () {
-    keyboard.deep = ui.deep.value;
-    keyboard.left = ui.left.value;
-    keyboard.down = ui.down.value;
-    keyboard.right = ui.right.value;
-    keyboard.rotate = ui.rotate.value;
+    keyboard.deep = toLower(ui.deep.value);
+    keyboard.left = toLower(ui.left.value);
+    keyboard.down = toLower(ui.down.value);
+    keyboard.right = toLower(ui.right.value);
+    keyboard.rotate = toLower(ui.rotate.value);
     keyboard.firstDelay = parseInt(ui.firstDelay.value);
     keyboard.repeDelay = parseInt(ui.repeDelay.value);
     document.querySelector("#option").style.display = "none";
