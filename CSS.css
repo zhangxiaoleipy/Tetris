@@ -4,33 +4,30 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width : 95%;
-    min-height: 600px;
-    background-color: rgb(20, 20, 20);
+    margin-top: 2em;
+    background-color: rgb(35,35,35);
 }
 
 #window{
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     z-index: 1;
     margin: 0;
-    padding: 20px;
+    padding: 1em;
     border : 1px solid #333;
-    width : 320px;
-    height: 410px;
     border-radius: 3px;
 }
 
 #canvas { 
     border : 2px solid #999;
     padding: 2px;
+    margin-right: 10px;
 }
 
 #rightcolumn {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    height : 400px;
 }
 
 #scanvas {
@@ -213,7 +210,6 @@ body {
     align-items: center;
     color : #FFF;
     margin: 0.3em;
-   /* padding: 0.5em;*/
     min-height: 10em;
     min-width: 18em;
     border-radius: 5px;
@@ -241,7 +237,7 @@ body {
     background-color: #FFF;
 }
 
-#table-border{
+#cont-table{
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -297,23 +293,23 @@ th, td {
     color: #999;
 }
 
-.content {
+.cont-win {
     font-size: 0.8em;
 }
 
-.content ul{
+.cont-win ul{
     list-style: none;
     margin: 0;
     padding: 0;
 }
 
-.content li{
+.cont-win li{
     margin: 0;
     padding: 0;
 }
 
 
-.opt-content{
+.cont-opt{
     width : 450px;
     display: flex;
     padding: 20px;
@@ -332,7 +328,7 @@ th, td {
     background-color: #999;
 }
 
-.opt-content input{
+.cont-opt input{
     display: inline-block;
     width : 5.5em;
     text-align: center;
@@ -380,4 +376,10 @@ th, td {
     align-items: center;
 }
 
+.cont-top10{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em;
+}
 
