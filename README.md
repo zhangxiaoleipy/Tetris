@@ -15,3 +15,13 @@
 更改了黑色的主题，白色很难配色。
 
 ![基本UI](https://github.com/zhangxiaoleipy/Tetris/blob/master/pic/top100.PNG)
+
+**更新：2019年3月6日 20:55:57**
+
+添加设置面板，可以修改控制按键
+
+增加按键二级延时功能，时间可以在设置面板更改
+
+![设置选项](https://github.com/zhangxiaoleipy/Tetris/blob/master/pic/sad001.PNG)
+
+
