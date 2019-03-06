@@ -1,8 +1,8 @@
-﻿/*
+﻿
+/*
 作者：张晓雷
 邮箱：zhangxiaolei@outlook.com
 */
-
 
 let canvas = document.querySelector("#canvas");
 let pix = canvas.getContext("2d");
@@ -108,10 +108,8 @@ function smallDisplay(t, c) {
     tmp.forEach(function (n) {
         pix2.beginPath();
         pix2.lineWidth = 1;
-        /*pix2.strokeStyle = "#EEE";*/
         pix2.fillStyle = createColor(c);
         pix2.rect(c === 1 || c === 2 ? n[1] * 20 + 1 : n[1] * 20 + 11, n[0] * 20 - 20 + 1, 19, 19);
-        /*pix2.stroke();*/
         pix2.fill();
     })
 }
@@ -145,20 +143,16 @@ function drawTable() {
                     pix.rect(i * size + 1, j * size - 60 + 1, 18, 18);
                     pix.stroke();
                 } else {
-                    //pix.strokeStyle = createColor(tmp);
                     pix.fillStyle = createColor(tmp);
                     pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
-                    //pix.stroke();
                     pix.fill();
                 }
                
                 //只绘制不为0的方块，这样可以空出背景。
             } else if (tmp !== 0) {
                 //绘制常规图形
-                //pix.strokeStyle = createColor(tmp);
                 pix.fillStyle = createColor(tmp);
                 pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
-                //pix.stroke();
                 pix.fill();
             }
         }
@@ -216,9 +210,7 @@ function shadow () {
             } 
         }
 
-        sMov = sMov.map(function (n) {
-            return [n[0] += 1, n[1]];
-        })
+        moveOneStep(sMov, "down");
     }
 }
 
@@ -227,7 +219,8 @@ let animateLook = false;
 
 function downLoop() {
 
-    //此处不能有 if (!moving.length)
+    //此处不能有 if (!moving.length) { return }
+    //因为开局第一次moving的值为空，如果后边不执行，就不能创造第一个方块
 
     if (!gameStart) { return };
    
@@ -361,8 +354,6 @@ function movoToDeep() {
 }
 
 //次函数的目的是在得分的时候，能有0.3毫秒的延时停顿，搞一个删除得分方块的“动画”。
-//没有产生得分，进入正常的产生新的方块流程
-//如果有的分，则先将数组数据替换为临时过度色，然后0.3秒后删除、补充，重绘。接着完成后续标准流程。
 
 function checkAndCreate() {
 
@@ -504,7 +495,7 @@ function rotate() {
 
     } else if (tetrisType === 2) {
         //长条，判断是否靠墙，如果靠墙，变形时偏移出空间来
-        //长条靠右侧墙需要特殊处理
+        //坐标[3][1]为坐标数组的最后一位，也就是方块的中心
         if (moving[3][1] === 0) {
 
             moveOneStep(moving, "right");
