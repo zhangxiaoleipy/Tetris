@@ -39,15 +39,18 @@ function toLower(t) {
 
 function createColor(c) {
     switch (c) {
-        case 0: return "#FFF";
-        case 1: return "#F60";
-        case 2: return "#CF93B2";
+        // 颜色代码无效，因为table内部的0是不绘制的
+        case 0: return "F000";
+        //方块类型看下边的对象
+        case 1: return "#00CED1"; //四方
+        case 2: return "#F60"; //gold
         case 3: return "#0C0";
         case 4: return "#699";
         case 5: return "#06C";
         case 6: return "#909";
         case 7: return "#F00";
-        case 9: return "gold";
+        // 延时过度
+        case 9: return "#FFD700";
         default:
             console.error("createColor Error");
     }
@@ -214,8 +217,10 @@ function shadow () {
     }
 }
 
-
+// 确保在200毫秒的延时过程中，后续的代码不会有效执行
 let animateLook = false;
+// 确保第一次的下降中断是失效的
+let firstDownBreak = true;
 
 function downLoop() {
 
@@ -250,6 +255,12 @@ function downLoop() {
 
         !animateLook && checkAndCreate();   
     
+        if (!firstDownBreak) {
+            downBreak = true;
+        } else {
+            firstDownBreak = false;
+        }
+
         return;
     }
 
@@ -573,15 +584,23 @@ function rotate() {
 
 let gameStart = false;
 let gameOver = true;
-//屏蔽系统连续触发锁
+/*
+屏蔽系统连续触发锁。因为所有的移动都是由函数定时循环驱动的，所以要屏蔽系统的连续触发，以避免作用交错在一起。
+每次按下按键，只会执行一次移动函数（函数内定时，连续触发），松开按键，锁开启，移动函数停止运行。
+*/
 let leftLock = false;
 let rightLock = false;
 let downLock = false;
-//定时
+
+// 确保在一直向下按的时候，当一个方块到底，不会立马另一个方块也开始快速向下移动，中途必须中断一次才能接着连续向下。
+let downBreak = false;
+
+// 第二级采用 setTimeInterval 进行连续触发
 let leftStop;
 let rightStop;
 let donwStop;
 
+// 第一级采用 setTimeout 延时
 let left1stStop;
 let right1stStop;
 let down1stStop;
@@ -611,14 +630,19 @@ document.onkeydown = function (k) {
         }
 
     } else if ( key === keyboard.down ) {
-    
-        if (!downLock) {
-            stopLoop();  //防止downloop循环和向下按钮的动作相互重合
-            downLoop();
-            moveDownPlus();
-            downLock = true;
-        }
 
+        if (!downBreak) {
+            if (!downLock) {
+                stopLoop();  //防止downloop循环和向下按钮的动作相互重合
+                downLoop();
+                moveDownPlus();
+                downLock = true;
+            }
+        } else {
+            clearTimeout(down1stStop);
+            clearInterval(donwStop);
+        }
+    
     } else if ( key === keyboard.deep ) {
 
         movoToDeep();
@@ -631,7 +655,7 @@ document.onkeydown = function (k) {
     }
 }
 
-
+// 解除连续触发
 
 document.onkeyup = function (k) {
 
@@ -652,6 +676,7 @@ document.onkeyup = function (k) {
         clearInterval(donwStop);
         restartLoop();
         downLock = false;
+        downBreak = false;
     }
 }
 
@@ -703,6 +728,7 @@ function resetGame () {
     lockStop = false;
     gameStart = false;
     gameOver = true;
+    firstDownBreak = true;
     drawTable();
 }
 
