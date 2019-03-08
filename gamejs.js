@@ -1,7 +1,8 @@
 ﻿
 /*
-作者：张晓雷
-邮箱：zhangxiaolei@outlook.com
+Author : Zhang xiaolei (张晓雷)
+Released under the MIT License.
+Email : zhangxiaolei@outlook.com
 */
 
 let canvas = document.querySelector("#canvas");
@@ -375,14 +376,14 @@ function checkAndCreate() {
     //如果h为0，则进入正常的创造新的方块流程
     if (!h) {
 
-        drawTable();
+        //drawTable();
         checkEnd();
-
         moving = [];
         old = [];
-
         stopLoop();
         createNewCube();
+        shadow();
+        drawTable();
         restartLoop();
 
     } else {
@@ -437,11 +438,15 @@ function checkAndCreate() {
                 table.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
             }
 
-            drawTable();
+            //drawTable();
 
             checkEnd();
 
             createNewCube();
+
+            shadow();
+
+            drawTable();
 
             restartLoop();
 
