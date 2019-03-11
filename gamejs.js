@@ -5,6 +5,8 @@ Released under the MIT License.
 Email : zhangxiaolei@outlook.com
 */
 
+let log = console.log;
+
 let canvas = document.querySelector("#canvas");
 let pix = canvas.getContext("2d");
 let scanvas = document.querySelector("#scanvas");
@@ -233,38 +235,41 @@ function downLoop() {
     let t = 0;
 
     if (moving.length === 4) {
+
         moveOneStep(moving, "down");
-    }
-   
-    moving.forEach(function (i) {
-        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
-            t += 1;
-        }
-    })
 
-    if (t === 4) {
-
-        refreshData();
-
-        copyAtoB(moving, old);
-
-    } else {
-
-        old.forEach(function (i) {
-         table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
+        moving.forEach(function (i) {
+            if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+                t += 1;
+            }
         })
 
-        !animateLook && checkAndCreate();   
+        if (t === 4) {
+
+            refreshData();
     
-        if (!firstDownBreak) {
-            downBreak = true;
+            copyAtoB(moving, old);
+    
         } else {
-            firstDownBreak = false;
+    
+            !animateLook && checkAndCreate("down");   
+        
+            if (!firstDownBreak) {
+                downBreak = true;
+            } else {
+                firstDownBreak = false;
+            }
+    
+            return;
         }
 
-        return;
-    }
+    } else {
+        //主要是为了应对第一次
+      
+        checkAndCreate("down");
 
+    }
+   
 };
 
 
@@ -326,23 +331,15 @@ function inTop10Check () {
 
 let deepLock = false;
 
+///////////////////////
+
 function movoToDeep() {
 
     if (!gameStart) { return };
     if (!moving.length) { return };
     if (deepLock) { return };
 
-    copyAtoB(moving, old);
-
-    let tmp = create4Arr();
-
-    copyAtoB(old, tmp);
-
-    let tmpValue = [];
-    //将 old 坐标对应的数值给 tmpValue
-    old.forEach(function (i) {
-        tmpValue.push(table[i[0]][i[1]]);
-    })
+    let tmp = getType(old);
 
     for (let x = 0; x <= 22; x++) {
         for (let i of moving) {
@@ -352,11 +349,12 @@ function movoToDeep() {
                     table[i[0]][i[1]] = 0;
                 })
                 // 将 old 之前交给 tmpValue 的数值复制到 moving 对应的table
-                moving.forEach(function (i, index) {
-                 table[i[0]][i[1]] = toNegative(tmpValue[index]);
+                moving.forEach(function (i) {
+                 table[i[0]][i[1]] = toNegative(tmp);
                 })
 
-                !animateLook && checkAndCreate();
+                //copyAtoB(moving, old);
+                !animateLook && checkAndCreate("deep");
                 deepLock = true;
                 return;
             }
@@ -365,100 +363,255 @@ function movoToDeep() {
     }
 }
 
-//次函数的目的是在得分的时候，能有0.3毫秒的延时停顿，搞一个删除得分方块的“动画”。
 
-function checkAndCreate() {
-
-    //直接返回的是checkSave数组
-    let arr = getScore();
+function normalAnimateCreate (arr) {
 
     let h = arr.length;
-    //如果h为0，则进入正常的创造新的方块流程
-    if (!h) {
 
-        //drawTable();
-        checkEnd();
-        moving = [];
-        old = [];
-        stopLoop();
-        createNewCube();
-        shadow();
-        drawTable();
-        restartLoop();
+    animateLook = true;
 
-    } else {
-        //进入延时显示流程
+    stopLoop();
 
-        animateLook = true;
+    arr.forEach(function (i) {
+        table.splice(i, 1, [9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
+    })
 
-        stopLoop();
+    drawTable();
 
+    moving = [];
+
+    old = [];
+
+    setTimeout(function () {
+
+        finishLine += h;
+
+        switch (h) {
+
+            case 1: {
+                gameScore += 100 * gameLeval;
+            } break;
+
+            case 2: {
+                gameScore += 400 * gameLeval;
+            } break;
+
+            case 3: {
+                gameScore += 900 * gameLeval;
+            } break;
+
+            case 4: {
+                gameScore += 1600 * gameLeval;
+            } break;
+
+            default: {
+                console.warn("score error");
+            }
+        }
+
+       
         arr.forEach(function (i) {
-            table.splice(i, 1, [9, 9, 9, 9, 9, 9, 9, 9, 9, 9]);
+            table.splice(i, 1);
         })
 
+        while (h--) {
+            table.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        }
+
+        checkEnd();
+
+        createNewCube();
+
+        shadow();
+
         drawTable();
 
-        moving = [];
+        restartLoop();
 
-        old = [];
+        digtalNumber(gameScore, scoreDisplay);
 
-        setTimeout(function () {
+        digtalNumber(finishLine, fineshLineDisplay);
 
-            finishLine += h;
+        changeLevalAndDisplay();
 
-            switch (h) {
+        animateLook = false;
 
-                case 1: {
-                    gameScore += 100 * gameLeval;
-                } break;
+    }, 200)
 
-                case 2: {
-                    gameScore += 400 * gameLeval;
-                } break;
+}
 
-                case 3: {
-                    gameScore += 900 * gameLeval;
-                } break;
+function normalCreate() {
+    
+    checkEnd();
 
-                case 4: {
-                    gameScore += 1600 * gameLeval;
-                } break;
+    moving = [];
+    old = [];
 
-                default: {
-                    console.warn("score error");
-                }
-            }
+    stopLoop();
+    createNewCube();
+    shadow();
+    drawTable();
+    restartLoop();
+}
+//这一部可能还要重新设置moving 和 Old 的数据
 
-            arr.forEach(function (i) {
-                table.splice(i, 1);
-            })
+function checkCanMove () {
 
-            while (h--) {
-                table.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-            }
+    moveOneStep(moving, "down");
+    
+    let t = 0;
 
-            //drawTable();
+    moving.forEach(function (i) {
+        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+            t += 1;
+        }
+    })
 
-            checkEnd();
+    return t === 4;
 
-            createNewCube();
+}
 
-            shadow();
+function getMinAndMax(a) {
 
-            drawTable();
+    if (a.length !== 4) { return [0, 0]};
 
-            restartLoop();
+    let min1, max1, min2, max2;
 
-            digtalNumber(gameScore, scoreDisplay);
+    if (a[0][0] < a[1][0]) {
+        min1 = a[0][0];
+        max1 = a[1][0];
+    } else {
+        min1 = a[1][0];
+        max1 = a[0][0];
+    }
 
-            digtalNumber(finishLine, fineshLineDisplay);
+    if (a[2][0] < a[3][0]) {
+        min2 = a[2][0];
+        max2 = a[3][0];
+    } else {
+        min2 = a[3][0];
+        max2 = a[2][0];
+    }
 
-            changeLevalAndDisplay();
+    return ([
+        min1 < min2 ? min1 : min2,
+        max1 > max2 ? max1 : max2
+    ])
+
+}
+
+let gameJustBegun = true;
+
+
+function checkGetScore(arr) {
+
+    let checkSave = [];
+
+    let [min, max] = getMinAndMax(arr);
+    //折腾特么两个小时！
+    //因为后续连续删除，所以必须从下往上记录数值。如果从上往下记录，数据由小到达，连续删除时，先删除序列小的数值，后边的序列数值必然改变，导致错误！
+    for (; max >= min; max--) {
+
+        if (table[max].every(function (n) {
+
+            return Math.abs(n) > 0;
+
+        })) {
+
+            checkSave.push(max);
+        }
+    }
+
+    return checkSave;
+}
+
+function checkAndCreate(deepOrDown) {
+
+    let arr, h;
+    //硬降不做改变
+    if (deepOrDown === "deep") {
+
+        arr = checkGetScore(moving);
+
+        arr.length ? normalAnimateCreate(arr) : normalCreate();
+
+        animateLook = false;
+
+    } else if (deepOrDown === "down") {
+
+        if (gameJustBegun) {
+            normalCreate();
+            gameJustBegun = false;
+            return;
+        }
+
+        arr = checkGetScore(old);
+
+        h = arr.length;
+
+        if (h) {
+            //直接得分了？
 
             animateLook = false;
 
-        }, 200)
+            old.forEach(function (i) {
+                table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
+            })
+
+            normalAnimateCreate(arr);
+
+        } else {
+
+           // copyAtoB(old, moving);
+           // stopLoop();
+
+            animateLook = true;
+
+            clearTimeout(down1stStop);
+            clearInterval(donwStop);
+            
+            setTimeout(function () {
+
+                let tmp = checkGetScore(old);
+               
+                if (checkCanMove()) {
+                  
+                    animateLook = false;
+
+                    //restartLoop();
+
+                    return;
+                   
+                } else {
+
+                    //调整后能否得分？
+
+                    if (tmp.length) {
+
+                        animateLook = false;
+
+                        old.forEach(function (i) {
+                            table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
+                        })
+
+                        normalAnimateCreate(tmp);
+
+
+                    } else {
+
+                       
+                        old.forEach(function (i) {
+                            table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
+                        })
+
+                        animateLook = false;
+                        
+                        normalCreate();
+                    }
+                }
+
+            },300);
+        }
     }
 }
 
@@ -865,21 +1018,8 @@ function changeLevalAndDisplay () {
 
 let gameScore = 0;
 
-function getScore () {
 
-    let checkSave = [], h = 0;
 
-    for (let i = 22; i > 1 ; i--) {
-        if (table[i].every(function (n) {
-            return ( n < 0 );
-        })) {
-            checkSave.push(i);
-        }
-    }
-    
-    return checkSave;
-
-}
 
 //初始游戏网格界面
 resetGame();
