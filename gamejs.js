@@ -223,9 +223,8 @@ function shadow () {
 // 确保在200毫秒的延时过程中，后续的代码不会有效执行
 let animateLook = false;
 
+//确保游戏第一个方块创建
 let gameJustBegun = true;
-// 确保第一次的下降中断是失效的
-//let firstDownBreak = true;
 
 function downLoop() {
 
@@ -463,7 +462,7 @@ function checkCanMove () {
 }
 
 //以数组的形式返回moving或old二维数组内每一个数组第一位的最小数值和最大数值
-//这样在计算得分的时候可以知道程序需要遍历的范围
+//这样在计算得分的时候可以知道程序需要遍历的准确范围
 
 function getMinAndMax(a) {
 
@@ -506,7 +505,7 @@ function checkGetScore(arr) {
     for (; max >= min; max--) {
 
         if (table[max].every(function (n) {
-
+            //只是检测，不做锁定，所以用绝对值来判断
             return Math.abs(n) > 0;
 
         })) {
@@ -517,13 +516,20 @@ function checkGetScore(arr) {
 
     return checkSave;
 }
-
+//方块锁定
 function tetrisLock (arr) {
+    //每一个方块的四个坐标的数值是一样的，所以只需要取出一个
     let t = getType(arr);
     arr.forEach(function (i) {
         table[i[0]][i[1]] = toNegative(t);
     })
 }
+
+/*
+checkAndCreate是方块操作流程的核心函数
+downLoop 和 moveToDeep 在结尾都调用这个函数来做具体的操作
+moveToDeep之前已经实现，后边增加了软降功能，moveToDeep不再做调整。
+*/
 
 function checkAndCreate(deepOrDown) {
 
@@ -547,7 +553,7 @@ function checkAndCreate(deepOrDown) {
             normalAnimateCreate(arr);
 
             animateLook = false;
-
+        //并没有
         } else {
 
             animateLook = true;
@@ -558,7 +564,7 @@ function checkAndCreate(deepOrDown) {
  
             setTimeout(function () {
 
-                //调整完先检测能不能再移动，如果能退出，继续循环
+                //调整完先检测能不能再移动，如果能，退出，继续循环
                
                 if (checkCanMove()) {
                   
@@ -568,8 +574,8 @@ function checkAndCreate(deepOrDown) {
                    
                 } else {
 
-                    //如果不能先检测有没有得分
-
+                    //如果不能，先检测有没有得分，然后做相应处理
+                    //移动后新的坐标
                     tmp = checkGetScore(old);
                     //得分
                     if (tmp.length) {
@@ -858,7 +864,7 @@ function resetGame () {
     lockStop = false;
     gameStart = false;
     gameOver = true;
-    firstDownBreak = true;
+    gameJustBegun = true;
     drawTable();
 }
 
