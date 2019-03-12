@@ -222,60 +222,55 @@ function shadow () {
 
 // 确保在200毫秒的延时过程中，后续的代码不会有效执行
 let animateLook = false;
+
+let gameJustBegun = true;
 // 确保第一次的下降中断是失效的
-let firstDownBreak = true;
+//let firstDownBreak = true;
 
 function downLoop() {
 
-    //此处不能有 if (!moving.length) { return }
-    //因为开局第一次moving的值为空，如果后边不执行，就不能创造第一个方块
-
     if (!gameStart) { return };
-   
+    //开局第一次制造方块
+    if (gameJustBegun) {
+        normalCreate();
+        gameJustBegun = false;
+        return;
+    }
+
+    if (!moving.length) { return }
+
     let t = 0;
 
-    if (moving.length === 4) {
+    moveOneStep(moving, "down");
 
-        moveOneStep(moving, "down");
-
-        moving.forEach(function (i) {
-            if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
-                t += 1;
-            }
-        })
-
-        if (t === 4) {
-
-            refreshData();
-    
-            copyAtoB(moving, old);
-    
-        } else {
-    
-            !animateLook && checkAndCreate("down");   
-        
-            if (!firstDownBreak) {
-                downBreak = true;
-            } else {
-                firstDownBreak = false;
-            }
-    
-            return;
+    moving.forEach(function (i) {
+        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+            t += 1;
         }
+    })
+
+    if (t === 4) {
+
+        refreshData();
+
+        copyAtoB(moving, old);
 
     } else {
-        //主要是为了应对第一次
-      
-        checkAndCreate("down");
 
+        copyAtoB(old, moving);
+
+        !animateLook && checkAndCreate("down");
+
+        return;
     }
-   
-};
+
+}
 
 
 function moveToLeftOrRight(to) {
 
     if (!gameStart) { return };
+
     if (!moving.length) { return };
 
     if (to === "left") {
@@ -331,8 +326,6 @@ function inTop10Check () {
 
 let deepLock = false;
 
-///////////////////////
-
 function movoToDeep() {
 
     if (!gameStart) { return };
@@ -344,16 +337,15 @@ function movoToDeep() {
     for (let x = 0; x <= 22; x++) {
         for (let i of moving) {
             if (i[0] === 22 || table[i[0] + 1][i[1]] < 0) {
-                //将 old 的数值清零
+               
                 old.forEach(function (i) {
                     table[i[0]][i[1]] = 0;
                 })
-                // 将 old 之前交给 tmpValue 的数值复制到 moving 对应的table
+             
                 moving.forEach(function (i) {
                  table[i[0]][i[1]] = toNegative(tmp);
                 })
 
-                //copyAtoB(moving, old);
                 !animateLook && checkAndCreate("deep");
                 deepLock = true;
                 return;
@@ -453,7 +445,6 @@ function normalCreate() {
     drawTable();
     restartLoop();
 }
-//这一部可能还要重新设置moving 和 Old 的数据
 
 function checkCanMove () {
 
@@ -470,6 +461,9 @@ function checkCanMove () {
     return t === 4;
 
 }
+
+//以数组的形式返回moving或old二维数组内每一个数组第一位的最小数值和最大数值
+//这样在计算得分的时候可以知道程序需要遍历的范围
 
 function getMinAndMax(a) {
 
@@ -500,16 +494,15 @@ function getMinAndMax(a) {
 
 }
 
-let gameJustBegun = true;
-
 
 function checkGetScore(arr) {
 
     let checkSave = [];
 
     let [min, max] = getMinAndMax(arr);
-    //折腾特么两个小时！
-    //因为后续连续删除，所以必须从下往上记录数值。如果从上往下记录，数据由小到达，连续删除时，先删除序列小的数值，后边的序列数值必然改变，导致错误！
+
+    //因为后边的程序频繁的连续删除得分行，所以必须从下往上记录数值。如果从上往下记录，数据由小到达，连续删除时，先删除序列小的数组，后边的序列数值必然改变，导致错误！
+
     for (; max >= min; max--) {
 
         if (table[max].every(function (n) {
@@ -525,88 +518,76 @@ function checkGetScore(arr) {
     return checkSave;
 }
 
+function tetrisLock (arr) {
+    let t = getType(arr);
+    arr.forEach(function (i) {
+        table[i[0]][i[1]] = toNegative(t);
+    })
+}
+
 function checkAndCreate(deepOrDown) {
 
-    let arr, h;
-    //硬降不做改变
+    //checkGetScore用来检测有没有得分，它并没有锁定，纯粹的检测，然后把得分的行数返回
+    let arr = checkGetScore(moving);
+
+    let h = arr.length;
+    //硬降在调用这个函数前已经锁定了，不做改变。
     if (deepOrDown === "deep") {
 
-        arr = checkGetScore(moving);
-
-        arr.length ? normalAnimateCreate(arr) : normalCreate();
+        h ? normalAnimateCreate(arr) : normalCreate();
 
         animateLook = false;
-
+    //软降
     } else if (deepOrDown === "down") {
-
-        if (gameJustBegun) {
-            normalCreate();
-            gameJustBegun = false;
-            return;
-        }
-
-        arr = checkGetScore(old);
-
-        h = arr.length;
-
+        //直接得分？
         if (h) {
-            //直接得分了？
-
-            animateLook = false;
-
-            old.forEach(function (i) {
-                table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
-            })
+        
+            tetrisLock(old);
 
             normalAnimateCreate(arr);
 
-        } else {
+            animateLook = false;
 
-           // copyAtoB(old, moving);
-           // stopLoop();
+        } else {
 
             animateLook = true;
 
-            clearTimeout(down1stStop);
-            clearInterval(donwStop);
-            
+            let tmp;
+
+            //----调整位置------
+ 
             setTimeout(function () {
 
-                let tmp = checkGetScore(old);
+                //调整完先检测能不能再移动，如果能退出，继续循环
                
                 if (checkCanMove()) {
                   
                     animateLook = false;
 
-                    //restartLoop();
-
                     return;
                    
                 } else {
 
-                    //调整后能否得分？
+                    //如果不能先检测有没有得分
 
+                    tmp = checkGetScore(old);
+                    //得分
                     if (tmp.length) {
 
-                        animateLook = false;
-
-                        old.forEach(function (i) {
-                            table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
-                        })
+                        tetrisLock(old);
 
                         normalAnimateCreate(tmp);
 
+                        animateLook = false;
 
                     } else {
+                        //没得分
+                        tetrisLock(old);
 
-                       
-                        old.forEach(function (i) {
-                            table[i[0]][i[1]] = toNegative(table[i[0]][i[1]]);
-                        })
+                        normalCreate();
 
                         animateLook = false;
-                        
-                        normalCreate();
+
                     }
                 }
 
@@ -750,9 +731,6 @@ let leftLock = false;
 let rightLock = false;
 let downLock = false;
 
-// 确保在一直向下按的时候，当一个方块到底，不会立马另一个方块也开始快速向下移动，中途必须中断一次才能接着连续向下。
-let downBreak = false;
-
 // 第二级采用 setTimeInterval 进行连续触发
 let leftStop;
 let rightStop;
@@ -789,18 +767,13 @@ document.onkeydown = function (k) {
 
     } else if ( key === keyboard.down ) {
 
-        if (!downBreak) {
-            if (!downLock) {
-                stopLoop();  //防止downloop循环和向下按钮的动作相互重合
-                downLoop();
-                moveDownPlus();
-                downLock = true;
-            }
-        } else {
-            clearTimeout(down1stStop);
-            clearInterval(donwStop);
+        if (!downLock) {
+            stopLoop();  //防止downloop循环和向下按钮的动作相互重合
+            downLoop();
+            moveDownPlus();
+            downLock = true;
         }
-    
+
     } else if ( key === keyboard.deep ) {
 
         movoToDeep();
@@ -834,7 +807,6 @@ document.onkeyup = function (k) {
         clearInterval(donwStop);
         restartLoop();
         downLock = false;
-        downBreak = false;
     }
 }
 
