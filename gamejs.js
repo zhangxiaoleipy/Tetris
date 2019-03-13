@@ -637,13 +637,19 @@ function moveOneStep(m, to) {
     }
 }
 
-function rotate() {
+function rotate(d) {
 
     if (!gameStart) { return }
 
     if (!moving.length) { return }
 
     let tetrisType = getType(moving);
+
+    let rtmp = [3, 6, 7];
+    //180度旋转只针对T、正7、负7有用，其它的方块无效
+    if (d === 2 && rtmp.indexOf(tetrisType) < 0 ) {
+        return;
+    }
 
     if (tetrisType === 1) {
         //四方直接退出
@@ -690,28 +696,87 @@ function rotate() {
     let xtmp = [];
 
     if (c.length) {
+    
+        /*
+        d == 0 顺时针旋转
+        d == 1 逆时针旋转
+        d == 2 180度旋转
+        长条旋转为了简化代码，只采用了两个方向
+        原因是长条没有一个稳定的中心，如果任意确定两个方块中的一个，旋转起来不“稳定”。
+        如果在旋转的过程中切换中心，我没有去细想，感觉可能写起来比较麻烦。
+        最主要的是感觉没有必要，现在确定左侧方块为中心，只做180度来回旋转，看起来比较稳定，方块的位置也好预测。
+        长条的本质是 三个短长条 加 一个方块， 三个方块按指令旋转，另外一个方块，做正下到右中的来回摆动，组合在一起就是一个180度转动的长条
+        */
 
-        for (let i of tmp) {
+        if ( d === 0 ) {
 
-            if (i[0] - c[0] === 2 && i[1] === c[1] ) {
-                xtmp.push([i[0] - 2, i[1] + 2]);
-            } else if (i[0] > c[0] && i[1] === c[1]) {
-                xtmp.push([i[0] - 1, i[1] - 1]);
+            //顺时针旋转
+
+            for (let i of tmp) {
+                //判断正下方
+                if (i[0] - c[0] === 2 && i[1] === c[1] ) {
+                    //长条在正下，采用逆时针摆动，方向相反
+                    xtmp.push([i[0] - 2, i[1] + 2]);
+                } else if (i[0] > c[0] && i[1] === c[1]) {
+                    //顺时旋转，所以 i[i] - 1
+                    xtmp.push([i[0] - 1, i[1] - 1]);
+                }
+                //方向右中
+                //因为方向是在右中，都是顺时旋转，所以方向想同
+                if ( i[0] === c[0] && i[1] - c[1] === 2) {
+                    xtmp.push([i[0] + 2, i[1] - 2])
+                } else if (i[0] === c[0] && i[1] > c[1] ) {
+                    xtmp.push([i[0] + 1, i[1] - 1]);
+                }
+    
+                i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); // 1 -3
+                i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] + 1]); //2-4
+                i[0] < c[0] && i[1] > c[1] &&  xtmp.push([i[0] + 2, i[1]]); //3-5
+                i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0], i[1] - 2]); //5-7
+                i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0] - 2, i[1]]); //7-1
+                i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] - 1, i[1] + 1]); //8-2
             }
+        
+       
+        } else {
 
-            if ( i[0] === c[0] && i[1] - c[1] === 2) {
-                xtmp.push([i[0] + 2, i[1] - 2])
-            } else if (i[0] === c[0] && i[1] > c[1] ) {
-                xtmp.push([i[0] + 1, i[1] - 1]);
-            }
+            //逆时针旋转和180旋转
+            //180 度旋转等于两个90度的逆时针旋转
 
-            i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); // 1 -3
-            i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] + 1]); //2-4
-            i[0] < c[0] && i[1] > c[1] &&  xtmp.push([i[0] + 2, i[1]]); //3-5
-            i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0], i[1] - 2]); //5-7
-            i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0] - 2, i[1]]); //7-1
-            i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] - 1, i[1] + 1]); //8-2
+            do {
+
+                for (let i of tmp) {
+    
+                    if (i[0] - c[0] === 2 && i[1] === c[1] ) {
+                        xtmp.push([i[0] - 2, i[1] + 2]);
+                    } else if (i[0] > c[0] && i[1] === c[1]) {
+                        xtmp.push([i[0] - 1, i[1] + 1]);
+                    }
+                  
+                    if ( i[0] === c[0] && i[1] - c[1] === 2) {
+                        xtmp.push([i[0] + 2, i[1] - 2])
+                    } else if (i[0] === c[0] && i[1] > c[1] ) {
+                        xtmp.push([i[0] - 1, i[1] - 1]);
+                    }
+        
+                    i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0] + 2, i[1]]); // 
+                    i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] - 1]); 
+                    i[0] < c[0] && i[1] > c[1] &&  xtmp.push([i[0], i[1] - 2]); 
+                    i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0] - 2, i[1]]); 
+                    i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); 
+                    i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] + 1, i[1] + 1]); 
+                }
+                //如果 d 等于 2，旋转两次，中间必须对数值做交换处理
+                if (d === 2) {
+                    tmp = xtmp;
+                    xtmp = [];
+                }
+                  
+            } while ( --d );
+            
         }
+
+        //中心位置不变，旋转完成将中心加入末尾，方块末尾为中心
 
         xtmp.push(c);
  
@@ -786,9 +851,17 @@ document.onkeydown = function (k) {
         deepLock = true;
 
     } else if ( key === keyboard.rotate ) {
+        //顺时针旋转
+        rotate(0);
 
-        rotate();
+    } else if ( key === keyboard.rotate1) {
 
+        //逆时针旋转
+        rotate(1);
+    } else if ( key === keyboard.rotate2) {
+
+        //180度旋转
+        rotate(2);
     }
 }
 
@@ -1080,31 +1153,28 @@ let initGameDate = {
         left : "a",
         right : "d",
         down : "s",
-        rotate : "k",
+        rotate : "k", //顺时针
+        rotate1 : "j", //逆时针
+        rotate2 : "l", //180度
         firstDelay : 100,
         repeDelay : 65
     }
 } 
 //载入数据
 
-let localData;
 
-
-localData = JSON.parse(localStorage.getItem("TetrisGameData"));
+let localData = JSON.parse(localStorage.getItem("TetrisGameData"));
 
 if (!localData) {
     localData = initGameDate;
 }
-
 
 let keyboard = localData.keyboard;
 
 //将比赛记录保存到浏览器
 function saveData() {
     if (window.localStorage) {
-        if (localData) {
-            localStorage.setItem("TetrisGameData", JSON.stringify(localData))
-        }
+        localStorage.setItem("TetrisGameData", JSON.stringify(localData))
     } else {
         console.error("存储数据失败 程序未找到 window.localStorage")
     }
@@ -1173,6 +1243,8 @@ ui.left = document.querySelector("#opt-left");
 ui.down = document.querySelector("#opt-down");
 ui.right = document.querySelector("#opt-right");
 ui.rotate = document.querySelector("#opt-rotate");
+ui.rotate1 = document.querySelector("#opt-rotate1");
+ui.rotate2 = document.querySelector("#opt-rotate2");
 ui.firstDelay = document.querySelector("#opt-firstdelay");
 ui.repeDelay = document.querySelector("#opt-repedelay");
 
@@ -1184,6 +1256,8 @@ document.querySelector("#optiontest").addEventListener("click", function () {
     ui.down.value = keyboard.down;
     ui.right.value = keyboard.right;
     ui.rotate.value = keyboard.rotate;
+    ui.rotate1.value = keyboard.rotate1;
+    ui.rotate2.value = keyboard.rotate2;
     ui.firstDelay.value = keyboard.firstDelay;
     ui.repeDelay.value = keyboard.repeDelay;
     screenCover("open");
@@ -1203,7 +1277,7 @@ document.querySelector("#clearData").addEventListener("click", function () {
 
 document.querySelector("#u-enterNameBT").addEventListener("click", function () {
     let name = document.querySelector("#u-enterName").value;
-    checkDataAndSave([name || "匿名", gameScore, gameLeval, finishLine]);
+    checkDataAndSave([name || "无名英雄", gameScore, gameLeval, finishLine]);
     screenCover("close");
     ui.enterTop10.style.display = "none";
 },false);
@@ -1249,6 +1323,8 @@ document.querySelector("#opt-bt-yes").addEventListener("click", function () {
     keyboard.down = toLower(ui.down.value);
     keyboard.right = toLower(ui.right.value);
     keyboard.rotate = toLower(ui.rotate.value);
+    keyboard.rotate1 = toLower(ui.rotate1.value);
+    keyboard.rotate2 = toLower(ui.rotate2.value);
     keyboard.firstDelay = parseInt(ui.firstDelay.value);
     keyboard.repeDelay = parseInt(ui.repeDelay.value);
     document.querySelector("#option").style.display = "none";
