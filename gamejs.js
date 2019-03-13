@@ -505,8 +505,8 @@ function checkGetScore(arr) {
     for (; max >= min; max--) {
 
         if (table[max].every(function (n) {
-            //只是检测，不做锁定，所以用绝对值来判断
-            return Math.abs(n) > 0;
+            
+            return n !== 0;
 
         })) {
 
