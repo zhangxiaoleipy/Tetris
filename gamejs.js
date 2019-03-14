@@ -445,6 +445,19 @@ function normalCreate() {
     restartLoop();
 }
 
+function checkCanTouch (arr) {
+
+    let t = 0;
+
+    arr.forEach(function (i) {
+        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+            t += 1;
+        }
+    })
+
+    return t < 4;
+}
+
 function checkCanMove (arr) {
 
     if (!arr.length) { return };
@@ -791,15 +804,29 @@ function rotate(d) {
     //中心位置不变，旋转完成将中心加入末尾，方块末尾为中心
     xtmp.push(c);
 
+    //获取移动后的最低位置坐标
     let lowPoint2 = getMinAndMax(xtmp)[1];
-    //如果animateLook为ture，说明方块已经处于落地状态，这个时候可以通过变形后的最底点和变形前的最低点想对比
-    //以判断方块在变形后是否已经超出原来的最低点。如果超出，则计算偏移量，进行向上偏移，确保变形后能贴地。
+
+    /*
+    如果animateLook为ture，说明方块已经处于落地状态，这个时候可以通过变形后的最底点和变形前的最低点想对比
+    以判断方块在变形后是否已经超出原来的最低点。如果超出，则计算偏移量，进行向上偏移，确保变形后能贴地。
+    */
+
     if (animateLook) {
         if (lowPoint2 > lowPoint) {
             for (let i = 0; i < lowPoint2 - lowPoint; i++) {
                 moveOneStep(xtmp, "up");
             }
         }
+    }
+
+    /*
+    这一段的目的是针对长条在横向下落时，因为中心点不均匀，导致距离还有一行空间却无法旋转的问题。
+    但这段代码也导致如果快速旋转长条，长条可以一直不降落，就酱紫！
+    */
+
+    if (!animateLook && checkCanTouch(xtmp)) {
+        moveOneStep(xtmp, "up");
     }
 
     for (let i of xtmp) {
