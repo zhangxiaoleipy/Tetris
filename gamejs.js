@@ -445,13 +445,19 @@ function normalCreate() {
     restartLoop();
 }
 
-function checkCanMove () {
+function checkCanMove (arr) {
 
-    moveOneStep(moving, "down");
+    if (!arr.length) { return };
+
+    let tmp = create4Arr();
+
+    copyAtoB(arr, tmp);
+
+    moveOneStep(tmp, "down");
     
     let t = 0;
 
-    moving.forEach(function (i) {
+    tmp.forEach(function (i) {
         if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
@@ -566,7 +572,7 @@ function checkAndCreate(deepOrDown) {
 
                 //调整完先检测能不能再移动，如果能，退出，继续循环
                
-                if (checkCanMove()) {
+                if (checkCanMove(moving)) {
                   
                     animateLook = false;
 
@@ -620,16 +626,20 @@ function moveOneStep(m, to) {
     if (m.length === 4) {
         let len = 4;
         if (to === "left") {
-            while (len --) {
+            while (len--) {
                 m[len][1] -= 1;
             }
-        } else if ( to === "right" ) {
-            while (len --) {
+        } else if (to === "right") {
+            while (len--) {
                 m[len][1] += 1;
             }
-        } else if ( to === "down") {
-            while (len --) {
+        } else if (to === "down") {
+            while (len--) {
                 m[len][0] += 1;
+            }
+        } else if (to === "up") {
+            while (len--) {
+                m[len][0] -= 1;
             }
         }
     } else {
@@ -645,17 +655,20 @@ function rotate(d) {
 
     let tetrisType = getType(moving);
 
-    let rtmp = [3, 6, 7];
-    //180度旋转只针对T、正7、负7有用，其它的方块无效
-    if (d === 2 && rtmp.indexOf(tetrisType) < 0 ) {
+     //四方直接退出
+    if (tetrisType === 1) {
+        return;
+    }
+    
+    //180度旋转只针对 T、+L、-L 有用，其它的方块无效
+    if (d === 2 && [3, 6, 7].indexOf(tetrisType) < 0 ) {
         return;
     }
 
-    if (tetrisType === 1) {
-        //四方直接退出
-        return;
+    //每次都保存一下方块的最低点
+    let lowPoint = getMinAndMax(moving)[1];
 
-    } else if (tetrisType === 2) {
+    if (tetrisType === 2) {
         //长条，判断是否靠墙，如果靠墙，变形时偏移出空间来
         //坐标[3][1]为坐标数组的最后一位，也就是方块的中心
         if (moving[3][1] === 0) {
@@ -685,111 +698,120 @@ function rotate(d) {
         }
     }
     
-    let c = [];
+    /*
+    创建 tmp 保存 moving 的数值
+    从 tmp 中取出中心 c;
+    xtmp用来保存变形后的数据。
+    */
 
     let tmp = create4Arr();
-
     copyAtoB(moving, tmp);
-
-    c = tmp.pop();
-
+    let c = tmp.pop();
     let xtmp = [];
 
-    if (c.length) {
-    
-        /*
-        d == 0 顺时针旋转
-        d == 1 逆时针旋转
-        d == 2 180度旋转
-        长条旋转为了简化代码，只采用了两个方向
-        原因是长条没有一个稳定的中心，如果任意确定两个方块中的一个，旋转起来不“稳定”。
-        如果在旋转的过程中切换中心，我没有去细想，感觉可能写起来比较麻烦。
-        最主要的是感觉没有必要，现在确定左侧方块为中心，只做180度来回旋转，看起来比较稳定，方块的位置也好预测。
-        长条的本质是 三个短长条 加 一个方块， 三个方块按指令旋转，另外一个方块，做正下到右中的来回摆动，组合在一起就是一个180度转动的长条
-        */
+    /*
+    d == 0 顺时针旋转
+    d == 1 逆时针旋转
+    d == 2 180度旋转
+    长条旋转为了简化代码，只采用了两个方向
+    原因是长条没有一个稳定的中心，如果任意确定两个方块中的一个，旋转起来不“稳定”。
+    如果在旋转的过程中切换中心，我没有去细想，感觉可能写起来比较麻烦。
+    最主要的是感觉没有必要，现在确定左侧方块为中心，只做180度来回旋转，看起来比较稳定，方块的位置也好预测。
+    长条的本质是 三个短长条 加 一个方块， 三个方块按指令旋转，另外一个方块，做正下到右中的来回摆动，组合在一起就是一个180度转动的长条
+    */
 
-        if ( d === 0 ) {
+    if (d === 0) {
 
-            //顺时针旋转
+        //顺时针旋转
 
-            for (let i of tmp) {
-                //判断正下方
-                if (i[0] - c[0] === 2 && i[1] === c[1] ) {
-                    //长条在正下，采用逆时针摆动，方向相反
-                    xtmp.push([i[0] - 2, i[1] + 2]);
-                } else if (i[0] > c[0] && i[1] === c[1]) {
-                    //顺时旋转，所以 i[i] - 1
-                    xtmp.push([i[0] - 1, i[1] - 1]);
-                }
-                //方向右中
-                //因为方向是在右中，都是顺时旋转，所以方向想同
-                if ( i[0] === c[0] && i[1] - c[1] === 2) {
-                    xtmp.push([i[0] + 2, i[1] - 2])
-                } else if (i[0] === c[0] && i[1] > c[1] ) {
-                    xtmp.push([i[0] + 1, i[1] - 1]);
-                }
-    
-                i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); // 1 -3
-                i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] + 1]); //2-4
-                i[0] < c[0] && i[1] > c[1] &&  xtmp.push([i[0] + 2, i[1]]); //3-5
-                i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0], i[1] - 2]); //5-7
-                i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0] - 2, i[1]]); //7-1
-                i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] - 1, i[1] + 1]); //8-2
+        for (let i of tmp) {
+            //判断正下方
+            if (i[0] - c[0] === 2 && i[1] === c[1]) {
+                //长条在正下，采用逆时针摆动，方向相反
+                xtmp.push([i[0] - 2, i[1] + 2]);
+            } else if (i[0] > c[0] && i[1] === c[1]) {
+                //顺时旋转，所以 i[i] - 1
+                xtmp.push([i[0] - 1, i[1] - 1]);
             }
-        
-       
-        } else {
+            //方向右中
+            //因为方向是在右中，都是顺时旋转，所以方向想同
+            if (i[0] === c[0] && i[1] - c[1] === 2) {
+                xtmp.push([i[0] + 2, i[1] - 2])
+            } else if (i[0] === c[0] && i[1] > c[1]) {
+                xtmp.push([i[0] + 1, i[1] - 1]);
+            }
 
-            //逆时针旋转和180旋转
-            //180 度旋转等于两个90度的逆时针旋转
-
-            do {
-
-                for (let i of tmp) {
-    
-                    if (i[0] - c[0] === 2 && i[1] === c[1] ) {
-                        xtmp.push([i[0] - 2, i[1] + 2]);
-                    } else if (i[0] > c[0] && i[1] === c[1]) {
-                        xtmp.push([i[0] - 1, i[1] + 1]);
-                    }
-                  
-                    if ( i[0] === c[0] && i[1] - c[1] === 2) {
-                        xtmp.push([i[0] + 2, i[1] - 2])
-                    } else if (i[0] === c[0] && i[1] > c[1] ) {
-                        xtmp.push([i[0] - 1, i[1] - 1]);
-                    }
-        
-                    i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0] + 2, i[1]]); // 
-                    i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] - 1]); 
-                    i[0] < c[0] && i[1] > c[1] &&  xtmp.push([i[0], i[1] - 2]); 
-                    i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0] - 2, i[1]]); 
-                    i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); 
-                    i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] + 1, i[1] + 1]); 
-                }
-                //如果 d 等于 2，旋转两次，中间必须对数值做交换处理
-                if (d === 2) {
-                    tmp = xtmp;
-                    xtmp = [];
-                }
-                  
-            } while ( --d );
-            
+            i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]); // 1 -3
+            i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] + 1]); //2-4
+            i[0] < c[0] && i[1] > c[1] && xtmp.push([i[0] + 2, i[1]]); //3-5
+            i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0], i[1] - 2]); //5-7
+            i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0] - 2, i[1]]); //7-1
+            i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] - 1, i[1] + 1]); //8-2
         }
 
-        //中心位置不变，旋转完成将中心加入末尾，方块末尾为中心
 
-        xtmp.push(c);
- 
-        for (let i of xtmp) {
-            if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
-                return;
+    } else {
+
+        //逆时针旋转和180旋转
+        //180 度旋转等于两个90度的逆时针旋转
+
+        do {
+
+            for (let i of tmp) {
+
+                if (i[0] - c[0] === 2 && i[1] === c[1]) {
+                    xtmp.push([i[0] - 2, i[1] + 2]);
+                } else if (i[0] > c[0] && i[1] === c[1]) {
+                    xtmp.push([i[0] - 1, i[1] + 1]);
+                }
+
+                if (i[0] === c[0] && i[1] - c[1] === 2) {
+                    xtmp.push([i[0] + 2, i[1] - 2])
+                } else if (i[0] === c[0] && i[1] > c[1]) {
+                    xtmp.push([i[0] - 1, i[1] - 1]);
+                }
+
+                i[0] < c[0] && i[1] < c[1] && xtmp.push([i[0] + 2, i[1]]); // 
+                i[0] < c[0] && i[1] === c[1] && xtmp.push([i[0] + 1, i[1] - 1]);
+                i[0] < c[0] && i[1] > c[1] && xtmp.push([i[0], i[1] - 2]);
+                i[0] > c[0] && i[1] > c[1] && xtmp.push([i[0] - 2, i[1]]);
+                i[0] > c[0] && i[1] < c[1] && xtmp.push([i[0], i[1] + 2]);
+                i[0] === c[0] && i[1] < c[1] && xtmp.push([i[0] + 1, i[1] + 1]);
             }
-        }  
+            //如果 d 等于 2，旋转两次，中间必须对数值做交换处理
+            if (d === 2) {
+                tmp = xtmp;
+                xtmp = [];
+            }
 
-        copyAtoB(xtmp, moving);
-        refreshData();
-        copyAtoB(moving, old);        
+        } while (--d);
+
     }
+
+    //中心位置不变，旋转完成将中心加入末尾，方块末尾为中心
+    xtmp.push(c);
+
+    let lowPoint2 = getMinAndMax(xtmp)[1];
+    //如果animateLook为ture，说明方块已经处于落地状态，这个时候可以通过变形后的最底点和变形前的最低点想对比
+    //以判断方块在变形后是否已经超出原来的最低点。如果超出，则计算偏移量，进行向上偏移，确保变形后能贴地。
+    if (animateLook) {
+        if (lowPoint2 > lowPoint) {
+            for (let i = 0; i < lowPoint2 - lowPoint; i++) {
+                moveOneStep(xtmp, "up");
+            }
+        }
+    }
+
+    for (let i of xtmp) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            return;
+        }
+    }
+
+    copyAtoB(xtmp, moving);
+    refreshData();
+    copyAtoB(moving, old);
+
 };
 
 let gameStart = false;
