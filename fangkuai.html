@@ -62,6 +62,7 @@
             <div class="test01">
                 <a href="#" id="infotest">英雄榜</a>
                 <a href="#" id="optiontest">设置</a>
+                <a href="#" id="aboutme">关于</a>
             </div>
 
             <div id="control">
@@ -131,7 +132,6 @@
             </table>
             <div class="table-bottom">
                 <a href="#" id="clearData">重置数据</a>
-                <a href="#" id="aboutme">关于</a>
             </div>
         </div>
     </div>
@@ -176,10 +176,18 @@
                 <span class="t-close t-closeX">×</span>
             </div>
             <div class="t-body">
-                <div class="cont-win">
-                    <ul>
-                        <li>作者 ： 张晓雷</li>
-                        <li>邮箱 ： zhangxiaolei@outlook.com</li>
+                <div class="cont-about">
+                    <ul class="cont-about-key">
+                        <li>作者</li>
+                        <li>邮箱</li>
+                        <li>协议</li>
+                        <li>Github</li>
+                    </ul>
+                    <ul class="cont-about-value">
+                        <li><a target="_blank" href="https://weibo.com/zhangxiaoleibox">张晓雷</a></li>
+                        <li><a href="mailto:zhangxiaolei@outlook.com">zhangxiaolei@outlook.com</a></li>
+                        <li><a target="_blank" href="https://opensource.org/licenses/MIT">[MIT] Copyright (c) 2019 Zhang XiaoLei</a></li>
+                        <li><a target="_blank" href="https://github.com/zhangxiaoleipy/Tetris">项目地址</a></li>
                     </ul>
                 </div>
             </div>
@@ -198,12 +206,12 @@
 
                         <div class="opt-leftbox">
 
-                                <div class="opt-up"><span>到底</span><input id="opt-deep" class="opt-i" type="text" value="w"/> </div>
+                                <div class="opt-up"><span>硬降（到底）</span><input id="opt-deep" class="opt-i" type="text" value="w"/> </div>
             
                                 <div class="opt-other">
 
                                         <div><span>向左</span><input id="opt-left" class="opt-i" type="text" value="a"/></div>
-                                        <div><span>向下</span><input id="opt-down" class="opt-i" type="text" value="s"/></div>
+                                        <div><span>下降</span><input id="opt-down" class="opt-i" type="text" value="s"/></div>
                                         <div><span>向右</span><input id="opt-right" class="opt-i" type="text" value="d"/></div>
 
                                 </div>
@@ -218,8 +226,8 @@
                 </div>
 
                 <div class="opt-item"> 
-                    <div>首次延时 <input id="opt-firstdelay" value="" type="text"/> ms</div>
-                    <div>重复延时 <input id="opt-repedelay" value="" type="text"/> ms</div>
+                    <div>自动加速延时 <input id="opt-firstdelay" value="" type="text"/> 毫秒</div>
+                    <div>自动重复延时 <input id="opt-repedelay" value="" type="text"/> 毫秒</div>
                 </div>
 
                 <div class="opt-control">

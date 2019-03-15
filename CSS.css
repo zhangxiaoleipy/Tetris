@@ -300,23 +300,33 @@ th, td {
 
 .test01 a{
     color: #999;
+    text-decoration: none;
 }
 
-.cont-win {
-    font-size: 0.8em;
+.test01 a:hover{
+    color : #FFF;
 }
 
-.cont-win ul{
+.cont-about {
+    padding: 1em;
+    font-size: 0.9em;
+    display: flex;
+}
+
+.cont-about ul{
     list-style: none;
-    margin: 0;
+    margin: 0.5em;
     padding: 0;
 }
 
-.cont-win li{
-    margin: 0;
-    padding: 0;
+.cont-about-key {
+    text-align: right;
 }
 
+.cont-about-value a {
+    color : white;
+    text-decoration: none;
+}
 
 .cont-opt{
     width : 450px;

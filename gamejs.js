@@ -1337,6 +1337,7 @@ document.querySelector("#u-enterNameBT").addEventListener("click", function () {
 ui.about = document.querySelector("#about-win");
 document.querySelector("#aboutme").addEventListener("click", function () {
     ui.about.style.display = "block";
+    screenCover("open");
 }, false)
 
 
