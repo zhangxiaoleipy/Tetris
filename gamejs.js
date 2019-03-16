@@ -312,7 +312,7 @@ let distanceTop10 = document.querySelector("#u-distancetop10");
 function inTop10Check () {
     if (localData.data.length < 10 || gameScore > localData.data[9][1]) {
         $("#u-score").text(gameScore);
-        $("#u-level").text(gameLeval);
+        $("#u-level").text(gameLevel);
         $("#u-lines").text(finishLine);
         ui.enterTop10.style.display = "block";
         screenCover("open");
@@ -354,6 +354,7 @@ function movoToDeep() {
     }
 }
 
+let gameScore = 0;
 
 function normalAnimateCreate (arr) {
 
@@ -380,19 +381,19 @@ function normalAnimateCreate (arr) {
         switch (h) {
 
             case 1: {
-                gameScore += 100 * gameLeval;
+                gameScore += 100 * gameLevel;
             } break;
 
             case 2: {
-                gameScore += 400 * gameLeval;
+                gameScore += 400 * gameLevel;
             } break;
 
             case 3: {
-                gameScore += 900 * gameLeval;
+                gameScore += 900 * gameLevel;
             } break;
 
             case 4: {
-                gameScore += 1600 * gameLeval;
+                gameScore += 1600 * gameLevel;
             } break;
 
             default: {
@@ -423,7 +424,7 @@ function normalAnimateCreate (arr) {
 
         digtalNumber(finishLine, fineshLineDisplay);
 
-        changeLevalAndDisplay();
+        changeLevalAndDisplay(finishLine);
 
         animateLook = false;
 
@@ -998,7 +999,7 @@ startAndPause.addEventListener("click", function () {
         gameOver = false;
         this.innerText = "暂停";
         this.setAttribute("style", "background-color : white");
-        changeLevalAndDisplay();
+        changeLevalAndDisplay(finishLine);
         restartLoop();
     } else {
         //游戏暂停
@@ -1055,69 +1056,22 @@ function restartLoop () {
     mainLoop();
 }
 
-let gameLeval = 0;
+let gameLevel = 0;
 
-function compara (begin,end) {
-    if (finishLine > begin && finishLine <= end) {
-        return true;
+let timeList = "1000,850,722,613,521,442,375,318,270,229,194,164,139,118,100,85,72,61,51,43,36,30,25,21,17".split(",");
+
+function changeLevalAndDisplay (line) {
+    line = (line === 0 ? 0 : line -= 1);
+    let level = (line < 10 ? 0 : parseInt(line / 10)) + 1;
+    let time = +timeList[level - 1];
+    if (time === NaN) {
+        gameLevel = 666666;
+        time = 1000;
     }
+    gameLevel = level;
+    changeLoopSpeed(time);
+    digtalNumber(gameLevel, levalDisplay);
 }
-
-function changeLevalAndDisplay () {
-
-    if (finishLine >=0 && finishLine <= 20) {
-        //level 1
-        gameLeval = 1;
-        changeLoopSpeed(1000);
-    } else if (compara(20, 40)) {
-        //leval 2
-        gameLeval = 2
-        changeLoopSpeed(900);
-    } else if (compara(40, 60)) {
-        //leval 3
-        gameLeval = 3;
-        changeLoopSpeed(800);
-    } else if (compara(60, 80)) {
-        //leval 4
-        gameLeval = 4;
-        changeLoopSpeed(700);
-    } else if (compara(80, 100)) {
-        //leval 5
-        gameLeval = 5;
-        changeLoopSpeed(600);
-    } else if (compara(100, 120)) {
-        //leval 6
-        gameLeval = 6;
-        changeLoopSpeed(500);
-    } else if (compara(120, 140)) {
-        //leval 7
-        gameLeval = 7;
-        changeLoopSpeed(400);
-    } else if (compara(140, 160)) {
-        //leval 8
-        gameLeval = 8;
-        changeLoopSpeed(300);
-    } else if (compara(160, 180)) {
-        //leval 9
-        gameLeval = 9;
-        changeLoopSpeed(200);
-    } else if (compara(180, 200)) {
-        //leval 10
-        gameLeval = 10;
-        changeLoopSpeed(100);
-    } else {
-        //leval 233
-        gameLeval = 666666
-        changeLoopSpeed(66);
-    }
-
-    digtalNumber(gameLeval, levalDisplay);
-
-}
-
-
-let gameScore = 0;
-
 
 
 
@@ -1326,7 +1280,7 @@ document.querySelector("#clearData").addEventListener("click", function () {
 
 document.querySelector("#u-enterNameBT").addEventListener("click", function () {
     let name = document.querySelector("#u-enterName").value;
-    checkDataAndSave([name || "无名英雄", gameScore, gameLeval, finishLine]);
+    checkDataAndSave([name || "无名英雄", gameScore, gameLevel, finishLine]);
     screenCover("close");
     ui.enterTop10.style.display = "none";
 },false);
