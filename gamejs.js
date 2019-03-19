@@ -485,9 +485,48 @@ function checkCanMove (arr) {
 
 }
 
-//以数组的形式返回moving或old二维数组内每一个数组第一位的最小数值和最大数值
-//这样在计算得分的时候可以知道程序需要遍历的准确范围
 
+/*
+次函数的作用是获取数组列表内单个数组元素的单个数值中的最小数值或最大数值
+arr 格式 [[1,2],[3,4],[5,6]...]
+h   单个数组的位数 0 或者 1,分别表示第一位和第二位
+s   表示参数的类型，2获取包含大小数组，0获取最小值，1获取最大值
+*/
+
+function getArrMixAndMax(arr, h, s) {
+    let mi, mx;
+    let len = arr.length;
+    if (!len) {
+        console.error("function error : getArrMixAndMax");
+        return;
+    }
+    if (len === 1) {
+        if ( s === 2) {
+            return [arr[0][h], arr[0][h]];
+        } else {
+            return arr[0][h];
+        }
+    } else {
+        mi = arr[0][h];
+        mx = mi;
+        for (let i = 1; i < len; i++) {
+            if (arr[i][h] < mi) {
+                mi = arr[i][h];
+            } else if (arr[i][h] > mx) {
+                mx = arr[i][h];
+            }
+        }
+        if (s === 2) {
+            return [mi, mx];
+        } else if (s === 0) {
+            return mi;
+        } else if (s === 1) {
+            return mx;
+        }
+    }
+}
+
+/*
 function getMinAndMax(a) {
 
     if (a.length !== 4) { return [0, 0]};
@@ -516,13 +555,14 @@ function getMinAndMax(a) {
     ])
 
 }
+*/
 
 
 function checkGetScore(arr) {
 
     let checkSave = [];
 
-    let [min, max] = getMinAndMax(arr);
+    let [min, max] = getArrMixAndMax(arr, 0, 2);
 
     //因为后边的程序频繁的连续删除得分行，所以必须从下往上记录数值。如果从上往下记录，数据由小到达，连续删除时，先删除序列小的数组，后边的序列数值必然改变，导致错误！
 
@@ -683,32 +723,31 @@ function smallMove(arr, y, x) {
 
 function straightRotate(m) {
     if (straightStage === 1) {
-        smallMove(m[0], -2, +1);
-        smallMove(m[1], -1, 0);
-        smallMove(m[2], 0, -1);
-        smallMove(m[3], +1, -2);
-        straightStage = 2;
-    } else if (straightStage === 2) {
-        smallMove(m[0], +1, -1);
-        smallMove(m[1], 0, 0);
-        smallMove(m[2], -1, +1);
-        smallMove(m[3], -2, +2);
-        straightStage = 3;
-    } else if (straightStage === 3) {
         smallMove(m[0], -1, +2);
         smallMove(m[1], 0, +1);
         smallMove(m[2], +1, 0);
         smallMove(m[3], +2, -1);
-        straightStage = 4;
-    } else if (straightStage === 4) {
+        straightStage = 2;
+    } else if (straightStage === 2) {
         smallMove(m[0], +2, -2);
         smallMove(m[1], +1, -1);
         smallMove(m[2], 0, 0);
         smallMove(m[3], -1, +1);
+        straightStage = 3;
+    } else if (straightStage === 3) {
+        smallMove(m[0], -2, +1);
+        smallMove(m[1], -1, 0);
+        smallMove(m[2], 0, -1);
+        smallMove(m[3], +1, -2);
+        straightStage = 4;
+    } else if (straightStage === 4) {
+        smallMove(m[0], +1, -1);
+        smallMove(m[1], 0, 0);
+        smallMove(m[2], -1, +1);
+        smallMove(m[3], -2, +2);
         straightStage = 1;
     }
 }
-
 
 function rotate(d) {
 
@@ -719,21 +758,25 @@ function rotate(d) {
     let tetrisType = getType(moving);
 
     if (tetrisType === 1) { return }
-    
+
+    let step;
+
+    if ( d === "left" ) {
+        step = 1;
+    } else if ( d === "right" ) {
+        step = 3;
+    }
+
     if (tetrisType === 2) {
 
-       straightRotate(moving);
-     
+        while ( step-- ) {
+            straightRotate(moving);
+        }
+
     } else {
         let tmp = [];
         let c = moving.pop();    
-        let step;
-        if ( d === "left" ) {
-            step = 1;
-        } else if ( d === "right" ) {
-            step = 3;
-        }
-        do {
+        while ( step --) {
             for (let i of moving) {
                 i[0] > c[0] && i[1] === c[1] && tmp.push([i[0] - 1, i[1] - 1]);
                 i[0] === c[0] && i[1] > c[1] && tmp.push([i[0] + 1, i[1] - 1]);
@@ -744,11 +787,11 @@ function rotate(d) {
                 i[0] > c[0] && i[1] < c[1] && tmp.push([i[0] - 2, i[1]]); //7-1
                 i[0] === c[0] && i[1] < c[1] && tmp.push([i[0] - 1, i[1] + 1]); //8-2
             }
-            if (step > 1) {
+            if (step > 0) {
                 moving = tmp;
                 tmp = [];
             }        
-        } while ( --step )
+        }
         moving = tmp;
         moving.push(c);
     } 
