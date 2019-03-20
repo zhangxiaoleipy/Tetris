@@ -676,7 +676,7 @@ function moveOneStep(m, to) {
 
 let straightStage = 1;
 
-//[y, x]
+//arr 格式 [y, x]，次函数是用来具体操作长条旋转函数的计算
 function smallMove(arr, y, x) {
     if (y < 0) {
         arr[0] += y
@@ -689,7 +689,7 @@ function smallMove(arr, y, x) {
         arr[1] += x
     }
 }
-
+//长条的旋转函数
 function straightRotate(m) {
     if (straightStage === 1) {
         smallMove(m[0], -1, +2);
@@ -739,15 +739,14 @@ function rotate(d) {
     }
 
     if (tetrisType === 2) {
-
-        while ( step-- ) {
+        while (step-- ) {
             straightRotate(moving);
         }
 
     } else {
         let tmp = [];
         let c = moving.pop();    
-        while ( step --) {
+        while (step --) {
             for (let i of moving) {
                 i[0] > c[0] && i[1] === c[1] && tmp.push([i[0] - 1, i[1] - 1]);
                 i[0] === c[0] && i[1] > c[1] && tmp.push([i[0] + 1, i[1] - 1]);
@@ -767,7 +766,10 @@ function rotate(d) {
         moving.push(c);
     } 
 
-    //触底旋转向上偏移
+    /*
+    触底旋转向上偏移，主动偏移
+    如果采用被动偏移，方块落地以后，偏转数据会超出table范围，收集数据时会导致索引超出范围问题
+    */
     let dp = 22;
     for (let i of moving) {
         if (i[0] > dp) {
@@ -779,23 +781,10 @@ function rotate(d) {
         moveOneStep(moving, "up");
     }
 
-    //旋转完成，开始后续偏转处理
+    //旋转完成，开始后续偏转处理，以及判定旋转是否成功
     let outsideRowList = [];
     let outsideVertList = [];
 
-    //收集下方重叠数据
-    for (let i of moving) {
-        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
-            outsideVertList.push(i);
-        }
-    }
-    //判断是否需要向上偏移 
-    if (outsideVertList.length) {
-        let [vmin, vmax] = getArrMixAndMax(outsideVertList, 0, 2);
-        for (let i = vmin ; i < vmax + 1; i++) {
-            moveOneStep(moving, "up");
-        }
-    }
     //收集横向重叠数据
     for (let i of moving) {
         if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
@@ -805,19 +794,17 @@ function rotate(d) {
 
     //判断是否需要左右偏转
     if (outsideRowList.length) {
-
+        //获取方块的左右边界值
         let [tmin, tmax] = getArrMixAndMax(moving, 1, 2);
         //方块的中心数值，比如长条 1,2,3,4, 计算(1 + 4) / 2 === 2.5
         let tcross = (tmin + tmax) / 2;
         //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
-        let trc = outsideRowList.reduce(((a,b) => a + b)) / outsideRowList.length
-        //由于moving的坐标在旋转以后会出现碰撞接触，所以从old中获取型号
-        let ttype = getType(old);
+        let trc = outsideRowList.reduce(((a,b) => a + b)) / outsideRowList.length;
         //判断偏移方向
         //向右偏移
         if (tcross - trc > 0) {
             //长条特殊处理
-            if (ttype === 2) {
+            if (tetrisType === 2) {
                 if (tcross - trc <= 1) {
                     moveOneStep(moving, "right");
                     moveOneStep(moving, "right");
@@ -831,7 +818,7 @@ function rotate(d) {
 
         } else {
             //向左偏移
-            if (ttype === 2) {
+            if (tetrisType === 2) {
                 if (trc - tcross <= 1) {
                     moveOneStep(moving, "left");
                     moveOneStep(moving, "left");
@@ -844,17 +831,36 @@ function rotate(d) {
             }
         }
     }
+     
+     
+     //收集下方重叠数据，moving此时的数据已经变动，所以收集数据要分开
+     
+    for (let i of moving) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            outsideVertList.push(i);
+        }
+    }
+
     
-    //判定旋转是否成功，如果失败，取消旋转
+    //判断是否需要向上偏移。判断是否收集到上移的数据，判断下方是否接触，确保没有左右偏转。
+    
+    if (outsideVertList.length && checkCanTouch(moving) && !outsideRowList.length) {
+        let [vmin, vmax] = getArrMixAndMax(outsideVertList, 0, 2);
+        for (let i = vmin ; i < vmax + 1; i++) {
+            moveOneStep(moving, "up");
+        }
+    }
+    
+    //最终判定旋转是否成功，如果失败，取消旋转
     for (let i of moving) {
         if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
             straightStage = Tstage;
             copyAtoB(old, moving);
-            return;
+            return; // 程序退出，旋转失败
         }
     }
 
-    //不需要偏转
+    //旋转成功！更新数据
     refreshData();
     copyAtoB(moving, old);
     
