@@ -526,37 +526,6 @@ function getArrMixAndMax(arr, h, s) {
     }
 }
 
-/*
-function getMinAndMax(a) {
-
-    if (a.length !== 4) { return [0, 0]};
-
-    let min1, max1, min2, max2;
-
-    if (a[0][0] < a[1][0]) {
-        min1 = a[0][0];
-        max1 = a[1][0];
-    } else {
-        min1 = a[1][0];
-        max1 = a[0][0];
-    }
-
-    if (a[2][0] < a[3][0]) {
-        min2 = a[2][0];
-        max2 = a[3][0];
-    } else {
-        min2 = a[3][0];
-        max2 = a[2][0];
-    }
-
-    return ([
-        min1 < min2 ? min1 : min2,
-        max1 > max2 ? max1 : max2
-    ])
-
-}
-*/
-
 
 function checkGetScore(arr) {
 
@@ -759,6 +728,8 @@ function rotate(d) {
 
     if (tetrisType === 1) { return }
 
+    let Tstage = straightStage;
+
     let step;
 
     if ( d === "left" ) {
@@ -796,28 +767,97 @@ function rotate(d) {
         moving.push(c);
     } 
 
-    let mi = 0, mx = 9;
-
+    //触底旋转向上偏移
+    let dp = 22;
     for (let i of moving) {
-        if (i[1] < mi) {
-            mi = i[1]
-        } else if (i[1] > mx) {
-            mx = i[1]
+        if (i[0] > dp) {
+            dp = i[0];
+        }
+    }
+    dp = dp - 22;
+    while (dp --) {
+        moveOneStep(moving, "up");
+    }
+
+    //旋转完成，开始后续偏转处理
+    let outsideRowList = [];
+    let outsideVertList = [];
+
+    //收集下方重叠数据
+    for (let i of moving) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            outsideVertList.push(i);
+        }
+    }
+    //判断是否需要向上偏移 
+    if (outsideVertList.length) {
+        let [vmin, vmax] = getArrMixAndMax(outsideVertList, 0, 2);
+        for (let i = vmin ; i < vmax + 1; i++) {
+            moveOneStep(moving, "up");
+        }
+    }
+    //收集横向重叠数据
+    for (let i of moving) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            outsideRowList.push(i[1]);
         }
     }
 
-    mi = Math.abs(mi);
-    mx = mx ? mx - 9 : 0;
-    while (mi --) {
-        moveOneStep(moving, "right");
-    }
-    while (mx --) {
-        moveOneStep(moving, "left");
+    //判断是否需要左右偏转
+    if (outsideRowList.length) {
+
+        let [tmin, tmax] = getArrMixAndMax(moving, 1, 2);
+        //方块的中心数值，比如长条 1,2,3,4, 计算(1 + 4) / 2 === 2.5
+        let tcross = (tmin + tmax) / 2;
+        //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
+        let trc = outsideRowList.reduce(((a,b) => a + b)) / outsideRowList.length
+        //由于moving的坐标在旋转以后会出现碰撞接触，所以从old中获取型号
+        let ttype = getType(old);
+        //判断偏移方向
+        //向右偏移
+        if (tcross - trc > 0) {
+            //长条特殊处理
+            if (ttype === 2) {
+                if (tcross - trc <= 1) {
+                    moveOneStep(moving, "right");
+                    moveOneStep(moving, "right");
+                } else {
+                    moveOneStep(moving, "right");
+                }
+            //一般偏移
+            } else {
+                moveOneStep(moving, "right");
+            }
+
+        } else {
+            //向左偏移
+            if (ttype === 2) {
+                if (trc - tcross <= 1) {
+                    moveOneStep(moving, "left");
+                    moveOneStep(moving, "left");
+                } else {
+                    moveOneStep(moving, "left");
+                }
+            //一般偏移
+            } else {
+                moveOneStep(moving, "left");
+            }
+        }
     }
     
+    //判定旋转是否成功，如果失败，取消旋转
+    for (let i of moving) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            straightStage = Tstage;
+            copyAtoB(old, moving);
+            return;
+        }
+    }
+
+    //不需要偏转
     refreshData();
     copyAtoB(moving, old);
-
+    
 };
 
 let gameStart = false;
