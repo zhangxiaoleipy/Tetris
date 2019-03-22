@@ -650,8 +650,11 @@ function refreshData() {
 }
 
 function moveOneStep(m, to) {
+
     if (m.length === 4) {
+
         let len = 4;
+
         if (to === "left") {
             while (len--) {
                 m[len][1] -= 1;
@@ -669,8 +672,10 @@ function moveOneStep(m, to) {
                 m[len][0] -= 1;
             }
         }
+
     } else {
-        console.error("function error : moveOneStep")
+        //有一个bug，定位一下是那里调用的
+        console.error("Function Error [moveOneStep] : " + m.toString() + " : " + to)
     }
 }
 
@@ -792,7 +797,7 @@ function rotate(d) {
         }
     }
 
-    //判断是否需要左右偏转
+    //初步判断是否需要左右偏转
     if (outsideRowList.length) {
         //获取方块的左右边界值
         let [tmin, tmax] = getArrMixAndMax(moving, 1, 2);
@@ -800,36 +805,41 @@ function rotate(d) {
         let tcross = (tmin + tmax) / 2;
         //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
         let trc = outsideRowList.reduce(((a,b) => a + b)) / outsideRowList.length;
-        //判断偏移方向
-        //向右偏移
-        if (tcross - trc > 0) {
-            //长条特殊处理
-            if (tetrisType === 2) {
-                if (tcross - trc <= 1) {
-                    moveOneStep(moving, "right");
-                    moveOneStep(moving, "right");
+        //排除正下方的方块，最终确定是否需要偏移
+        if (!(tcross - trc === 0)) {
+            //判断偏移方向
+            //向右偏移
+            if (tcross - trc > 0) {
+                //长条特殊处理
+                if (tetrisType === 2) {
+                    if (tcross - trc <= 1) {
+                        moveOneStep(moving, "right");
+                        moveOneStep(moving, "right");
+                    } else {
+                        moveOneStep(moving, "right");
+                    }
+                //一般偏移
                 } else {
                     moveOneStep(moving, "right");
                 }
-            //一般偏移
+
             } else {
-                moveOneStep(moving, "right");
+                //向左偏移
+                if (tetrisType === 2) {
+                    if (trc - tcross <= 1) {
+                        moveOneStep(moving, "left");
+                        moveOneStep(moving, "left");
+                    } else {
+                        moveOneStep(moving, "left");
+                    }
+                //一般偏移
+                } else {
+                    moveOneStep(moving, "left");
+                }
             }
 
-        } else {
-            //向左偏移
-            if (tetrisType === 2) {
-                if (trc - tcross <= 1) {
-                    moveOneStep(moving, "left");
-                    moveOneStep(moving, "left");
-                } else {
-                    moveOneStep(moving, "left");
-                }
-            //一般偏移
-            } else {
-                moveOneStep(moving, "left");
-            }
         }
+       
     }
      
      
@@ -842,9 +852,9 @@ function rotate(d) {
     }
 
     
-    //判断是否需要向上偏移。判断是否收集到上移的数据，判断下方是否接触，确保没有左右偏转。
+    //判断是否需要向上偏移。判断是否收集到上移的数据，判断下方是否接触。
     
-    if (outsideVertList.length && checkCanTouch(moving) && !outsideRowList.length) {
+    if (outsideVertList.length && checkCanTouch(moving)) {
         let [vmin, vmax] = getArrMixAndMax(outsideVertList, 0, 2);
         for (let i = vmin ; i < vmax + 1; i++) {
             moveOneStep(moving, "up");
@@ -1182,7 +1192,7 @@ let initGameDate = {
         down : "s",
         rotate : "k", //顺时针
         rotate1 : "j", //逆时针
-        rotate2 : "l", //180度
+        //rotate2 : "l", //180度
         firstDelay : 100,
         repeDelay : 65
     }
@@ -1271,7 +1281,7 @@ ui.down = document.querySelector("#opt-down");
 ui.right = document.querySelector("#opt-right");
 ui.rotate = document.querySelector("#opt-rotate");
 ui.rotate1 = document.querySelector("#opt-rotate1");
-ui.rotate2 = document.querySelector("#opt-rotate2");
+//ui.rotate2 = document.querySelector("#opt-rotate2");
 ui.firstDelay = document.querySelector("#opt-firstdelay");
 ui.repeDelay = document.querySelector("#opt-repedelay");
 
@@ -1284,7 +1294,7 @@ document.querySelector("#optiontest").addEventListener("click", function () {
     ui.right.value = keyboard.right;
     ui.rotate.value = keyboard.rotate;
     ui.rotate1.value = keyboard.rotate1;
-    ui.rotate2.value = keyboard.rotate2;
+    //ui.rotate2.value = keyboard.rotate2;
     ui.firstDelay.value = keyboard.firstDelay;
     ui.repeDelay.value = keyboard.repeDelay;
     screenCover("open");
@@ -1352,7 +1362,7 @@ document.querySelector("#opt-bt-yes").addEventListener("click", function () {
     keyboard.right = toLower(ui.right.value);
     keyboard.rotate = toLower(ui.rotate.value);
     keyboard.rotate1 = toLower(ui.rotate1.value);
-    keyboard.rotate2 = toLower(ui.rotate2.value);
+    //keyboard.rotate2 = toLower(ui.rotate2.value);
     keyboard.firstDelay = parseInt(ui.firstDelay.value);
     keyboard.repeDelay = parseInt(ui.repeDelay.value);
     document.querySelector("#option").style.display = "none";
