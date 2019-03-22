@@ -793,20 +793,21 @@ function rotate(d) {
     //收集横向重叠数据
     for (let i of moving) {
         if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
-            outsideRowList.push(i[1]);
+            outsideRowList.push(i);
         }
     }
 
+    let rowLen = outsideRowList.length;
     //初步判断是否需要左右偏转
-    if (outsideRowList.length) {
+    if (rowLen) {
         //获取方块的左右边界值
         let [tmin, tmax] = getArrMixAndMax(moving, 1, 2);
         //方块的中心数值，比如长条 1,2,3,4, 计算(1 + 4) / 2 === 2.5
         let tcross = (tmin + tmax) / 2;
         //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
-        let trc = outsideRowList.reduce(((a,b) => a + b)) / outsideRowList.length;
+        let trc = rowLen === 1 ? outsideRowList[0][1] : (outsideRowList.reduce((a,b) => a[1] + b[1]) / rowLen);
         //排除正下方的方块，最终确定是否需要偏移
-        if (!(tcross - trc === 0)) {
+        if (!((tcross - trc === 0) || (rowLen === 1 && outsideRowList[0][0] === getArrMixAndMax(moving, 0, 1)))) {
             //判断偏移方向
             //向右偏移
             if (tcross - trc > 0) {
