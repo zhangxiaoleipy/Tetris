@@ -800,6 +800,17 @@ function rotate(d) {
     let rowLen = outsideRowList.length;
     //初步判断是否需要左右偏转
     if (rowLen) {
+        //获取方块底部index
+        let deepIndex = getArrMixAndMax(moving, 0, 1);
+       
+        let deepWidth = 0;
+        //统计底部宽度
+        moving.forEach((i)=>{
+            if (i[0] === deepIndex) {
+                deepWidth += 1;
+            }
+        })
+        
         //获取方块的左右边界值
         let [tmin, tmax] = getArrMixAndMax(moving, 1, 2);
         //方块的中心数值，比如长条 1,2,3,4, 计算(1 + 4) / 2 === 2.5
@@ -807,7 +818,7 @@ function rotate(d) {
         //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
         let trc = rowLen === 1 ? outsideRowList[0][1] : (outsideRowList.reduce((a,b) => a[1] + b[1]) / rowLen);
         //排除正下方的方块，最终确定是否需要偏移
-        if (!((tcross - trc === 0) || (rowLen === 1 && outsideRowList[0][0] === getArrMixAndMax(moving, 0, 1)))) {
+        if (!((tcross - trc === 0) || (rowLen === 1 && outsideRowList[0][0] === deepIndex && deepWidth === 1)  )) {
             //判断偏移方向
             //向右偏移
             if (tcross - trc > 0) {
