@@ -52,6 +52,8 @@ function createColor(c) {
         case 5: return "#06C";
         case 6: return "#909";
         case 7: return "#F00";
+
+        case 8: return "#333";
         // 延时过度
         case 9: return "#FFD700";
         default:
@@ -62,13 +64,13 @@ function createColor(c) {
 // 每队数组最后一位是旋转的中心点，不能改变次序
 // 第一队数组是四方块，没有中心
 let tetris = {
-    1: [[1, 4], [1, 5], [2, 5], [2, 4]],  // 四方
-    2: [[2, 3], [2, 4], [2, 5], [2, 6]],  // 长条
-    3: [[1, 3], [1, 5], [2, 4], [1, 4]],  // 三 
-    4: [[1, 3], [1, 4], [2, 5], [2, 4]],  // 顺二
-    5: [[1, 4], [1, 5], [2, 3], [2, 4]],  // 负二
-    6: [[1, 3], [1, 5], [2, 3], [1, 4]],  // 负七
-    7: [[1, 3], [1, 5], [2, 5], [1, 4]]   // 顺七
+    1: [[3, 4], [3, 5], [4, 5], [4, 4]],  // 四方
+    2: [[4, 3], [4, 4], [4, 5], [4, 6]],  // 长条
+    3: [[3, 3], [3, 5], [4, 4], [3, 4]],  // 三 
+    4: [[3, 3], [3, 4], [4, 5], [4, 4]],  // 顺二
+    5: [[3, 4], [3, 5], [4, 3], [4, 4]],  // 负二
+    6: [[3, 3], [3, 5], [4, 3], [3, 4]],  // 负七
+    7: [[3, 3], [3, 5], [4, 5], [3, 4]]   // 顺七
 }
 
 
@@ -115,7 +117,7 @@ function smallDisplay(t, c) {
         pix2.beginPath();
         pix2.lineWidth = 1;
         pix2.fillStyle = createColor(c);
-        pix2.rect(c === 1 || c === 2 ? n[1] * 20 + 1 : n[1] * 20 + 11, n[0] * 20 - 20 + 1, 19, 19);
+        pix2.rect(c === 1 || c === 2 ? n[1] * 20 + 1 : n[1] * 20 + 11, (n[0] - 2) * 20 - 20 + 1, 19, 19);
         pix2.fill();
     })
 }
@@ -123,49 +125,46 @@ function smallDisplay(t, c) {
 
 //存储所有信息数据的table
 const table = [];
+/*
+canvas 宽度等于 20 * 10 + (10 + 1) = 211px
+canvas 高度等于 20 * 20 + (20 + 1) = 421px
+为了解决在贴近顶部转动方块，因为向上便宜导致的索引出界问题，将table数组的范围由原来的 0 - 22 (23)调整为 0-24 (25格);
+用来绘图的表格区域必须变更，由原来的偏移 [60px] (23-20) * 20 增加到 [100px + 5 * 1 = 105px] (25 - 20) * 20。
+*/
+
+function drawSquare(x, y, c) {
+    pix.beginPath();
+    pix.lineWidth = 1;
+    pix.fillStyle = c;
+    //方块之间有一个像素的间隙---------向上移动100px
+    pix.rect(x * 21 + 1, y * 21 + 1 - 105, 20, 20);
+    pix.fill();
+}
 
 //绘制游戏方块区域函数
 function drawTable() {
-
-    pix.clearRect(0, 0, 200, 400);
-    let size = 20;
+    //runSpeedTest.st();
     let tmp;
-
-    for (let j = 2; j <= 22; j++) {
-        
+    pix.clearRect(0, 0, 211, 421);
+    for (let j = 4; j <= 24; j++) {
         for (let i = 0; i <= 9; i++) {
-
             tmp = Math.abs(table[j][i]);
-            pix.beginPath();
-            pix.lineWidth = 1;
-            
             if (sMov.some(function (s) {
                 return s[0] === j && s[1] === i;
             })) {
-                //绘制阴影
-                //如果tmp等于0，说明当前方块为空，可以显示阴影。相反，则说明方块区域有正在移动的方块，给予优先显示。
                 if (tmp === 0) {
-                    pix.strokeStyle = "#FFF";
-                    pix.rect(i * size + 1, j * size - 60 + 1, 18, 18);
-                    pix.stroke();
+                    drawSquare(i, j, createColor(8))
                 } else {
-                    pix.fillStyle = createColor(tmp);
-                    pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
-                    pix.fill();
+                    drawSquare(i, j, createColor(tmp));
                 }
-               
-                //只绘制不为0的方块，这样可以空出背景。
             } else if (tmp !== 0) {
-                //绘制常规图形
-                pix.fillStyle = createColor(tmp);
-                pix.rect(i * size + 1, j * size - 60 + 1, 19, 19);
-                pix.fill();
+                drawSquare(i, j, createColor(tmp));
             }
         }
     }
     sMov = create4Arr();
+    //log(runSpeedTest.ed());
 }
-
 
 let moving = [];
 let old = [];
@@ -209,11 +208,11 @@ function shadow () {
  
     copyAtoB(moving, sMov);
 
-    for (let x = 2; x <= 22; x++) {
+    for (let x = 4; x <= 24; x++) {
       
         for (let i of sMov) {
             
-            if (i[0] === 22 || table[i[0] + 1][i[1]] < 0) {
+            if (i[0] === 24 || table[i[0] + 1][i[1]] < 0) {
 
                 return;
 
@@ -247,7 +246,7 @@ function downLoop() {
     moveOneStep(moving, "down");
 
     moving.forEach(function (i) {
-        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+        if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
     })
@@ -299,7 +298,7 @@ function moveToLeftOrRight(to) {
 
 
 function checkEnd () {
-    if(table[2].some(function (i) {
+    if(table[4].some(function (i) {
         return (i < 0);
     })) {
         stopLoop();
@@ -337,9 +336,9 @@ function movoToDeep() {
 
     let tmp = getType(old);
 
-    for (let x = 0; x <= 22; x++) {
+    for (let x = 0; x <= 24; x++) {
         for (let i of moving) {
-            if (i[0] === 22 || table[i[0] + 1][i[1]] < 0) {
+            if (i[0] === 24 || table[i[0] + 1][i[1]] < 0) {
                
                 old.forEach(function (i) {
                     table[i[0]][i[1]] = 0;
@@ -455,7 +454,7 @@ function checkCanTouch (arr) {
     let t = 0;
 
     arr.forEach(function (i) {
-        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+        if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
     })
@@ -476,7 +475,7 @@ function checkCanMove (arr) {
     let t = 0;
 
     tmp.forEach(function (i) {
-        if (i[0] <= 22 && table[i[0]][i[1]] >= 0) {
+        if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
     })
@@ -630,7 +629,7 @@ function checkAndCreate(deepOrDown) {
                     }
                 }
 
-            },300);
+            },430);
         }
     }
 }
@@ -775,13 +774,13 @@ function rotate(d) {
     触底旋转向上偏移，主动偏移
     如果采用被动偏移，方块落地以后，偏转数据会超出table范围，收集数据时会导致索引超出范围问题
     */
-    let dp = 22;
+    let dp = 24;
     for (let i of moving) {
         if (i[0] > dp) {
             dp = i[0];
         }
     }
-    dp = dp - 22;
+    dp = dp - 24;
     while (dp --) {
         moveOneStep(moving, "up");
     }
@@ -1012,7 +1011,7 @@ function moveDownPlus () {
 
 
 function resetGame () {
-    for (let row = 0; row <= 22; row ++) {
+    for (let row = 0; row <= 24; row ++) {
         table[row] = [];
         for (let col = 0; col <= 9; col ++) {
             table[row].push(0);

@@ -228,4 +228,28 @@ function $(selector, context) {
 }
 
 
-
+var runSpeedTest = {
+    timerList: {},
+    st: function (i) {
+        this.timerList[i || "now"] = new Date();
+    },
+    ed: function (i) {
+        if (this.timerList) {
+            if (!i) {
+                if (this.timerList["now"]) {
+                    return new Date() - this.timerList["now"];
+                } else {
+                    console.error("Timer tag not found (No parameter mode)")
+                }
+            } else {
+                if (this.timerList[i]) {
+                    return new Date() - this.timerList[i];
+                } else {
+                    console.error("Timer tag not found");
+                }
+            }
+        } else {
+            console.error("timerlist is empty");
+        }
+    }
+};
