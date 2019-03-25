@@ -578,62 +578,49 @@ function checkAndCreate(deepOrDown) {
         animateLook = false;
     //软降
     } else if (deepOrDown === "down") {
-        //直接得分？
-        if (h) {
-        
-            tetrisLock(old);
+   
+        animateLook = true;
 
-            normalAnimateCreate(arr);
+        //----调整位置------
 
-            animateLook = false;
-        //并没有
-        } else {
+        setTimeout(function () {
 
-            animateLook = true;
+            //调整完先检测能不能再移动，如果能，退出，继续循环
+            
+            if (checkCanMove(moving)) {
+                
+                animateLook = false;
 
-            let tmp;
+                return;
+                
+            } else {
 
-            //----调整位置------
- 
-            setTimeout(function () {
+                //如果不能，先检测有没有得分，然后做相应处理
+                //移动后新的坐标
+                let tmp = checkGetScore(old);
+                //得分
+                if (tmp.length) {
 
-                //调整完先检测能不能再移动，如果能，退出，继续循环
-               
-                if (checkCanMove(moving)) {
-                  
+                    tetrisLock(old);
+
+                    normalAnimateCreate(tmp);
+
                     animateLook = false;
 
-                    return;
-                   
                 } else {
+                    //没得分
+                    tetrisLock(old);
 
-                    //如果不能，先检测有没有得分，然后做相应处理
-                    //移动后新的坐标
-                    tmp = checkGetScore(old);
-                    //得分
-                    if (tmp.length) {
+                    normalCreate();
 
-                        tetrisLock(old);
+                    animateLook = false;
 
-                        normalAnimateCreate(tmp);
-
-                        animateLook = false;
-
-                    } else {
-                        //没得分
-                        tetrisLock(old);
-
-                        normalCreate();
-
-                        animateLook = false;
-
-                    }
                 }
-
-            },430);
-        }
+            }
+        },430);
     }
 }
+
 
 
 function refreshData() {
