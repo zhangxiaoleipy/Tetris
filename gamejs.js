@@ -43,19 +43,20 @@ function toLower(t) {
 function createColor(c) {
     switch (c) {
         // 颜色代码无效，因为table内部的0是不绘制的
-        case 0: return "F000";
+        case 0: return "#FFF";
         //方块类型看下边的对象
-        case 1: return "#00CED1"; //四方
-        case 2: return "#F60"; //gold
-        case 3: return "#0C0";
-        case 4: return "#699";
-        case 5: return "#06C";
-        case 6: return "#909";
-        case 7: return "#F00";
+        case 1: return "#EEE685";  //O
+        case 2: return "#B9D3EE";  //I
+        case 3: return "#DDA0DD";  //T
+        case 4: return "#EE6363";  //Z
+        case 5: return "#32CD32";  //S
+        case 6: return "#CD9B1D";  //L
+        case 7: return "#8470FF";  //J
 
-        case 8: return "#333";
-        // 延时过度
-        case 9: return "#FFD700";
+        case 8: return "#525252";    //阴影
+
+        case 9: return "#FFFF00";    //过渡色
+
         default:
             console.error("createColor Error");
     }
@@ -64,13 +65,13 @@ function createColor(c) {
 // 每队数组最后一位是旋转的中心点，不能改变次序
 // 第一队数组是四方块，没有中心
 let tetris = {
-    1: [[3, 4], [3, 5], [4, 5], [4, 4]],  // 四方
-    2: [[4, 3], [4, 4], [4, 5], [4, 6]],  // 长条
-    3: [[3, 3], [3, 5], [4, 4], [3, 4]],  // 三 
-    4: [[3, 3], [3, 4], [4, 5], [4, 4]],  // 顺二
-    5: [[3, 4], [3, 5], [4, 3], [4, 4]],  // 负二
-    6: [[3, 3], [3, 5], [4, 3], [3, 4]],  // 负七
-    7: [[3, 3], [3, 5], [4, 5], [3, 4]]   // 顺七
+    1: [[3, 4], [3, 5], [4, 5], [4, 4]],  // O
+    2: [[4, 3], [4, 4], [4, 5], [4, 6]],  // I
+    3: [[3, 3], [3, 5], [4, 4], [3, 4]],  // T
+    4: [[3, 3], [3, 4], [4, 5], [4, 4]],  // Z
+    5: [[3, 4], [3, 5], [4, 3], [4, 4]],  // S
+    6: [[3, 3], [3, 5], [4, 3], [3, 4]],  // L
+    7: [[3, 3], [3, 5], [4, 5], [3, 4]]   // J
 }
 
 
@@ -815,9 +816,9 @@ function rotate(d) {
         //方块的中心数值，比如长条 1,2,3,4, 计算(1 + 4) / 2 === 2.5
         let tcross = (tmin + tmax) / 2;
         //出界方块的中心, 比如出界 3,4 计算 ： (3 + 4) / 2
-        let trc = rowLen === 1 ? outsideRowList[0][1] : (outsideRowList.reduce((a,b) => a[1] + b[1]) / rowLen);
+        let trc = rowLen === 1 ? outsideRowList[0][1] : outsideRowList.reduce((a,b) => a[1] + b[1]) / rowLen;
         //排除正下方的方块，最终确定是否需要偏移
-        if (!((tcross - trc === 0) || (rowLen === 1 && outsideRowList[0][0] === deepIndex && deepWidth === 1)  )) {
+        if (!((tcross - trc === 0) || (rowLen === 1 && outsideRowList[0][0] === deepIndex && deepWidth === 1))) {
             //判断偏移方向
             //向右偏移
             if (tcross - trc > 0) {
