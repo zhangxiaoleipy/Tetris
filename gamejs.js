@@ -134,12 +134,8 @@ canvas 高度等于 20 * 20 + (20 + 1) = 421px
 */
 
 function drawSquare(x, y, c) {
-    pix.beginPath();
-    pix.lineWidth = 1;
     pix.fillStyle = c;
-    //方块之间有一个像素的间隙---------向上移动100px
-    pix.rect(x * 21 + 1, y * 21 + 1 - 105, 20, 20);
-    pix.fill();
+    pix.fillRect(x * 21 + 1, y * 21 + 1 - 105, 20, 20);
 }
 
 //绘制游戏方块区域函数
@@ -450,11 +446,13 @@ function normalCreate() {
     restartLoop();
 }
 
-function checkCanTouch (arr) {
+// arr === moving
+
+function checkCanTouch () {
 
     let t = 0;
 
-    arr.forEach(function (i) {
+    moving.forEach(function (i) {
         if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
@@ -463,23 +461,19 @@ function checkCanTouch (arr) {
     return t < 4;
 }
 
-function checkCanMove (arr) {
+function checkCanMove () {
 
-    if (!arr.length) { return };
-
-    let tmp = create4Arr();
-
-    copyAtoB(arr, tmp);
-
-    moveOneStep(tmp, "down");
+    moveOneStep(moving, "down");
     
     let t = 0;
 
-    tmp.forEach(function (i) {
+    moving.forEach(function (i) {
         if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
             t += 1;
         }
     })
+
+    copyAtoB(old, moving);
 
     return t === 4;
 
@@ -587,7 +581,7 @@ function checkAndCreate(deepOrDown) {
 
             //调整完先检测能不能再移动，如果能，退出，继续循环
             
-            if (checkCanMove(moving)) {
+            if (checkCanMove()) {
                 
                 animateLook = false;
 
@@ -617,16 +611,14 @@ function checkAndCreate(deepOrDown) {
 
                 }
             }
-        },430);
+        },400);
     }
 }
 
 
-
 function refreshData() {
     shadow();
-    let tmp;
-    tmp = table[old[0][0]][old[0][1]];
+    let tmp = table[old[0][0]][old[0][1]];
     old.forEach(function (i) {
         table[i[0]][i[1]] = 0;
     })
@@ -853,7 +845,7 @@ function rotate(d) {
     
     //判断是否需要向上偏移。判断是否收集到上移的数据，判断下方是否接触。
     
-    if (outsideVertList.length && checkCanTouch(moving)) {
+    if (outsideVertList.length && checkCanTouch()) {
         let [vmin, vmax] = getArrMixAndMax(outsideVertList, 0, 2);
         for (let i = vmin ; i < vmax + 1; i++) {
             moveOneStep(moving, "up");
@@ -895,6 +887,9 @@ let left1stStop;
 let right1stStop;
 let down1stStop;
 
+//确保每次按下旋转只能旋转一次，不会进入连续触发
+let rotateLock = false;
+
 document.onkeydown = function (k) {
 
     let key = toLower(k.key);
@@ -935,16 +930,19 @@ document.onkeydown = function (k) {
 
     } else if ( key === keyboard.rotate ) {
         //顺时针旋转
-        rotate("left");
+        if (!rotateLock) {
+            rotate("left");
+            rotateLock = true;
+        }
 
     } else if ( key === keyboard.rotate1) {
 
         //逆时针旋转
-        rotate("right");
-    } else if ( key === keyboard.rotate2) {
-
-        //180度旋转
-        rotate(2);
+        if (!rotateLock) {
+            rotate("right");
+            rotateLock = true;
+        }
+       
     }
 }
 
@@ -969,6 +967,8 @@ document.onkeyup = function (k) {
         clearInterval(donwStop);
         restartLoop();
         downLock = false;
+    } else if (key === keyboard.rotate || key === keyboard.rotate1) {
+        rotateLock = false;
     }
 }
 
