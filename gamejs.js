@@ -236,32 +236,36 @@ function downLoop() {
         return;
     }
 
-    if (!moving.length) { return }
+    setTimeout(() => {
 
-    let t = 0;
-
-    moveOneStep(moving, "down");
-
-    moving.forEach(function (i) {
-        if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
-            t += 1;
+        if (!moving.length) { return }
+    
+        let t = 0;
+    
+        moveOneStep(moving, "down");
+    
+        moving.forEach(function (i) {
+            if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
+                t += 1;
+            }
+        })
+    
+        if (t === 4) {
+    
+            refreshData();
+    
+            copyAtoB(moving, old);
+    
+        } else {
+    
+            copyAtoB(old, moving);
+    
+            !animateLook && checkAndCreate("down");
+    
+            return;
         }
-    })
 
-    if (t === 4) {
-
-        refreshData();
-
-        copyAtoB(moving, old);
-
-    } else {
-
-        copyAtoB(old, moving);
-
-        !animateLook && checkAndCreate("down");
-
-        return;
-    }
+    }, 0);
 
 }
 
@@ -270,27 +274,32 @@ function moveToLeftOrRight(to) {
 
     if (!gameStart) { return };
 
-    if (!moving.length) { return };
+    setTimeout(() => {
 
-    if (to === "left") {
+        if (!moving.length) { return };
 
-        moveOneStep(moving, "left");
+        if (to === "left") {
 
-    } else if (to === "right") {
+            moveOneStep(moving, "left");
 
-        moveOneStep(moving, "right");
-    }
+        } else if (to === "right") {
 
-    for (let i of moving) {
-        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
-            copyAtoB(old, moving);
-            return;
+            moveOneStep(moving, "right");
         }
-    }
 
-    refreshData();
+        for (let i of moving) {
+            if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+                copyAtoB(old, moving);
+                return;
+            }
+        }
 
-    copyAtoB(moving, old);
+        refreshData();
+
+        copyAtoB(moving, old);
+
+    }, 0);
+
 }
 
 
@@ -328,30 +337,35 @@ let deepLock = false;
 function movoToDeep() {
 
     if (!gameStart) { return };
-    if (!moving.length) { return };
     if (deepLock) { return };
 
-    let tmp = getType(old);
+    setTimeout(() => {
 
-    for (let x = 0; x <= 24; x++) {
-        for (let i of moving) {
-            if (i[0] === 24 || table[i[0] + 1][i[1]] < 0) {
-               
-                old.forEach(function (i) {
-                    table[i[0]][i[1]] = 0;
-                })
-             
-                moving.forEach(function (i) {
-                 table[i[0]][i[1]] = toNegative(tmp);
-                })
+        if (!moving.length) { return };
 
-                !animateLook && checkAndCreate("deep");
-                deepLock = true;
-                return;
+        let tmp = getType(old);
+    
+        for (let x = 0; x <= 24; x++) {
+            for (let i of moving) {
+                if (i[0] === 24 || table[i[0] + 1][i[1]] < 0) {
+                   
+                    old.forEach(function (i) {
+                        table[i[0]][i[1]] = 0;
+                    })
+                 
+                    moving.forEach(function (i) {
+                     table[i[0]][i[1]] = toNegative(tmp);
+                    })
+    
+                    !animateLook && checkAndCreate("deep");
+                    deepLock = true;
+                    return;
+                }
             }
+            moveOneStep(moving, "down");
         }
-        moveOneStep(moving, "down");
-    }
+    }, 0);
+
 }
 
 let gameScore = 0;
@@ -433,12 +447,9 @@ function normalAnimateCreate (arr) {
 }
 
 function normalCreate() {
-    
     checkEnd();
-
     moving = [];
     old = [];
-
     stopLoop();
     createNewCube();
     shadow();
