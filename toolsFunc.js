@@ -1,5 +1,5 @@
 
-/*
+
 //产生随机数的对象，功能参考Python。
 var random = {
     //产生0-1之间的随机数
@@ -45,8 +45,7 @@ var random = {
     },
     //从递增序列里选择一个数据
     randrange: function (begin, end, step) {
-        let list = this.getAscendingList(begin, end, step);
-        return this.choice(list);
+        return this.choice(this.getAscendingList(begin, end, step));
     },
     //从数组里随机获得N个元素。
     sample: function (arr, num) {
@@ -57,43 +56,6 @@ var random = {
         }
     }
 };
-
-let tetrisRandCache = [0,0,0,0,0,0,0];
-let tetrisTmp = random.shuffle(random.getAscendingList(0, 6, 1));
-
-function rand() {
-
-    let t, index;
-
-    t = random.choice(tetrisTmp);
-  
-    index = tetrisTmp.indexOf(t);
-   
-    
-    if (tetrisRandCache[index] < 2) {
-        tetrisRandCache[index] += 1;
-    }
-
-    for (let i = 0; i < tetrisRandCache.length; i++) {
-        if (tetrisRandCache[i] >= 2) {
-            tetrisRandCache.splice(i, 1);
-            tetrisTmp.splice(i, 1);
-            break;
-        }
-    }
-
-    if (!tetrisTmp.length) {
-        tetrisTmp = random.shuffle(random.getAscendingList(0, 6, 1));
-        tetrisRandCache = [0,0,0,0,0,0,0];
-    }
-
-    return t + 1
-
-}
-
-*/
-
-
 
 
 //一个简单的定时器构造函数
@@ -129,48 +91,30 @@ function CreateTimer() {
     }
 }
 
-//方块随机算法
+//--------------7-bag---------------------
 
-function random (begin, end) {
-    return parseInt(Math.random () * (end - begin + 1) + begin);
-}
+function* randGenerator () {
 
-let tetrisRandCache = [0, 0, 0, 0, 0, 0, 0];
+    let bag = [];
 
-function rand() {
+    while (true) {
 
-    let t;
+        if (bag.length === 0) {
 
-    do {
+            bag = [1,2,3,4,5,6,7];
 
-        t = random(0, 6);
-
-        if (tetrisRandCache[t] < 2) {
-
-            tetrisRandCache[t] += 1;
-
-        } else {
-
-            t = false;
-
+            bag = random.shuffle(bag);
         }
 
-    } while ( t === false );
-
-    if (tetrisRandCache.every(function (n) {
-
-        return n >= 1;
-
-    })) {
-
-        tetrisRandCache = [0, 0, 0, 0, 0, 0, 0];
-
+        yield bag.pop();
     }
-
-    return t + 1;
-
 }
 
+let randList = randGenerator();
+
+function rand() {
+    return randList.next().value;
+}
 
 //对象工厂模式的选择器函数，用来最简单的模拟jQuery
 
@@ -253,3 +197,88 @@ var runSpeedTest = {
         }
     }
 };
+
+
+
+/*
+//方块随机算法
+
+function random (begin, end) {
+    return parseInt(Math.random () * (end - begin + 1) + begin);
+}
+
+let tetrisRandCache = [0, 0, 0, 0, 0, 0, 0];
+
+function rand() {
+
+    let t;
+
+    do {
+
+        t = random(0, 6);
+
+        if (tetrisRandCache[t] < 2) {
+
+            tetrisRandCache[t] += 1;
+
+        } else {
+
+            t = false;
+
+        }
+
+    } while ( t === false );
+
+    if (tetrisRandCache.every(function (n) {
+
+        return n >= 1;
+
+    })) {
+
+        tetrisRandCache = [0, 0, 0, 0, 0, 0, 0];
+
+    }
+
+    return t + 1;
+
+}
+
+*/
+
+
+/*
+
+let tetrisRandCache = [0,0,0,0,0,0,0];
+let tetrisTmp = random.shuffle(random.getAscendingList(0, 6, 1));
+
+function rand() {
+
+    let t, index;
+
+    t = random.choice(tetrisTmp);
+  
+    index = tetrisTmp.indexOf(t);
+   
+    
+    if (tetrisRandCache[index] < 2) {
+        tetrisRandCache[index] += 1;
+    }
+
+    for (let i = 0; i < tetrisRandCache.length; i++) {
+        if (tetrisRandCache[i] >= 2) {
+            tetrisRandCache.splice(i, 1);
+            tetrisTmp.splice(i, 1);
+            break;
+        }
+    }
+
+    if (!tetrisTmp.length) {
+        tetrisTmp = random.shuffle(random.getAscendingList(0, 6, 1));
+        tetrisRandCache = [0,0,0,0,0,0,0];
+    }
+
+    return t + 1
+
+}
+
+*/

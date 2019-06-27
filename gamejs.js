@@ -6,6 +6,7 @@ Email : zhangxiaolei@outlook.com
 */
 
 let log = console.log;
+log("---add_rotate---")
 
 let canvas = document.querySelector("#canvas");
 let pix = canvas.getContext("2d");
@@ -236,36 +237,33 @@ function downLoop() {
         return;
     }
 
-    setTimeout(() => {
 
-        if (!moving.length) { return }
-    
-        let t = 0;
-    
-        moveOneStep(moving, "down");
-    
-        moving.forEach(function (i) {
-            if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
-                t += 1;
-            }
-        })
-    
-        if (t === 4) {
-    
-            refreshData();
-    
-            copyAtoB(moving, old);
-    
-        } else {
-    
-            copyAtoB(old, moving);
-    
-            !animateLook && checkAndCreate("down");
-    
-            return;
+    if (!moving.length) { return }
+
+    let t = 0;
+
+    moveOneStep(moving, "down");
+
+    moving.forEach(function (i) {
+        if (i[0] <= 24 && table[i[0]][i[1]] >= 0) {
+            t += 1;
         }
+    })
 
-    }, 0);
+    if (t === 4) {
+
+        refreshData();
+
+        copyAtoB(moving, old);
+
+    } else {
+
+        copyAtoB(old, moving);
+
+        !animateLook && checkAndCreate("down");
+
+        return;
+    }
 
 }
 
@@ -274,31 +272,27 @@ function moveToLeftOrRight(to) {
 
     if (!gameStart) { return };
 
-    setTimeout(() => {
+    if (!moving.length) { return };
 
-        if (!moving.length) { return };
+    if (to === "left") {
 
-        if (to === "left") {
+        moveOneStep(moving, "left");
 
-            moveOneStep(moving, "left");
+    } else if (to === "right") {
 
-        } else if (to === "right") {
+        moveOneStep(moving, "right");
+    }
 
-            moveOneStep(moving, "right");
+    for (let i of moving) {
+        if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
+            copyAtoB(old, moving);
+            return;
         }
+    }
 
-        for (let i of moving) {
-            if (i[1] < 0 || i[1] > 9 || table[i[0]][i[1]] < 0) {
-                copyAtoB(old, moving);
-                return;
-            }
-        }
+    refreshData();
 
-        refreshData();
-
-        copyAtoB(moving, old);
-
-    }, 0);
+    copyAtoB(moving, old);
 
 }
 
@@ -442,7 +436,7 @@ function normalAnimateCreate (arr) {
 
         animateLook = false;
 
-    }, 200)
+    }, 100)
 
 }
 
