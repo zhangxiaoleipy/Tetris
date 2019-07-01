@@ -1,179 +1,246 @@
 ﻿<!doctype html>
 
 <html>
+
 <head>
     <title>俄罗斯方块</title>
-    <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no"/>-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="CSS.css" />
     <script src="toolsFunc.js"></script>
 </head>
 
 <body>
 
-    <div class="game-container">
+    <div class="game-border">
 
-    <div class="game-window">
-        <!--游戏主面板-->
-        <canvas id="canvas" width=211 height=421></canvas>
+        <div class="game-window">
+            <!--游戏主面板-->
+            <canvas id="canvas" width=211 height=421></canvas>
 
-        <!--右侧信息板-->
-        <div id="rightcolumn">
+            <!--右侧信息板-->
+            <div id="rightcolumn">
 
-            <div class="rightbox">
-                <span class = "panelLabel">下一个</span><br/>
-                <canvas id="scanvas" width=80 height=40></canvas><br/>
-            </div>
-
-            <div class="rightbox">
-                <span class="panelLabel">得分</span>
-                <div id="digtalNumber" class="numberStyle">
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="n0"></div>
-                </div>
-            </div>
-
-            <div class="rightbox">
-                <span class="panelLabel">行数</span>
-                <div id="line" class="numberStyle">
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="n0"></div>
-                </div>
-            </div>
-
-            <div class="rightbox">
-                <span class="panelLabel">关卡</span>
-                <div id="leval" class="numberStyle">
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="ns"></div>
-                    <div class="n0"></div>
-                </div>
-            </div>
-
-            <div class="test01">
-                <a href="#" id="infotest">英雄榜</a>
-                <a href="#" id="optiontest">设置</a>
-                <a href="#" id="aboutme">关于</a>
-            </div>
-
-            <div id="control">
-                <div id="startPause" class="t-button">开始</div>
-                <div id="reset" class="t-button">重来</div>
-            </div>
-
-        </div>
-        
-    </div>
-
-    <!--弹出窗口背景遮挡-->
-    <div id="backGroundCover"></div>
-
-    <!--确定是否重来-->
-
-    <div class="t-win" id = "u-reset">
-        <div class="t-head">
-            <span class="t-title">提示</span>
-            <span class="t-close t-closeX">×</span>
-        </div>
-        <div class="t-body">
-            <div class="cont-rst">
-                <div>游戏正在进行，你确定重置吗？</div>
-                <div class="t-okAndNo">
-                    <div class="t-button" id="u-resetBT">确定</div>
-                    <div class="t-close t-button">算了</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--游戏结束确认窗口-->
-
-    <div class="t-win" id = "u-gameOver">
-        <div class="t-head">
-            <span class="t-title">提示</span>
-            <span class="t-close t-closeX">×</span>
-        </div>
-        <div class="t-body">
-            <div>游戏结束！</div>
-            <div>距离英雄榜还差：<span id="u-distancetop10"></span> 分</div>
-        </div>
-    </div>
-
-    <!--游戏统计信息板-->
-
-    <div class="t-win" id="u-info">
-
-        <div class="t-head">
-            <span class="t-title">英雄榜 - 前十名</span>
-            <span class="t-close t-closeX">×</span>
-        </div>
-
-        <div id="cont-table">
-
-            <table id="table-list">
-                <tr><th>名次</th><th>昵称</th><th>得分</th><th>关卡</th><th>行数</th></tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-                <tr> <td></td><td></td><td></td><td></td><td></td> </tr>
-            </table>
-            <div class="table-bottom">
-                <a href="#" id="clearData">重置数据</a>
-            </div>
-        </div>
-    </div>
-
-    <!--top10-->
-    <div class="t-win" id = "u-enterTop10">
-
-        <div class="t-head">
-            <span class="t-title">:)</span>
-            <span class="t-close t-closeX">×</span>
-        </div>
-
-        <div class="t-body">
-
-            <div class="cont-top10">
-                
-                <div class="cont-top10-title">英雄榜</div>
-                
-                <div class="cont-top10-inputname">输入你的昵称，记录战绩</div>
-
-                <input id="u-enterName" type="text" />
-
-                <div id="u-enterTop10info">
-                    <div>分数&nbsp&nbsp&nbsp<span id="u-score"></span></div>
-                    <div>关卡&nbsp&nbsp&nbsp<span id="u-level"></span></div>
-                    <div>行数&nbsp&nbsp&nbsp<span id="u-lines"></span></div>
+                <div class="rightbox">
+                    <span class="panelLabel">下一个</span><br />
+                    <canvas id="scanvas" width=80 height=40></canvas><br />
                 </div>
 
-                <div class="t-okAndNo">
+                <div class="rightbox">
+                    <span class="panelLabel">得分</span>
+                    <div id="digtalNumber" class="numberStyle">
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="n0"></div>
+                    </div>
+                </div>
+
+                <div class="rightbox">
+                    <span class="panelLabel">行数</span>
+                    <div id="line" class="numberStyle">
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="n0"></div>
+                    </div>
+                </div>
+
+                <div class="rightbox">
+                    <span class="panelLabel">关卡</span>
+                    <div id="leval" class="numberStyle">
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="ns"></div>
+                        <div class="n0"></div>
+                    </div>
+                </div>
+
+                <div class="test01">
+                    <a href="#" id="infotest">英雄榜</a>
+                    <a href="#" id="optiontest">设置</a>
+                    <a href="#" id="aboutme">关于</a>
+                </div>
+
+                <div id="control">
+                    <div id="startPause" class="t-button">开始</div>
+                    <div id="reset" class="t-button">重来</div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!--弹出窗口背景遮挡-->
+        <div id="backGroundCover"></div>
+
+        <!--确定是否重来-->
+
+        <div class="t-win" id="u-reset">
+            <div class="t-head">
+                <span class="t-title">提示</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+            <div class="t-body">
+                <div class="cont-rst">
+                    <div>游戏正在进行，你确定重置吗？</div>
+                    <div class="t-okAndNo">
+                        <div class="t-button" id="u-resetBT">确定</div>
+                        <div class="t-close t-button">算了</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--游戏结束确认窗口-->
+
+        <div class="t-win" id="u-gameOver">
+            <div class="t-head">
+                <span class="t-title">提示</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+            <div class="t-body">
+                <div>游戏结束！</div>
+                <div>距离英雄榜还差：<span id="u-distancetop10"></span> 分</div>
+            </div>
+        </div>
+
+        <!--游戏统计信息板-->
+
+        <div class="t-win" id="u-info">
+
+            <div class="t-head">
+                <span class="t-title">英雄榜 - 前十名</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+
+            <div id="cont-table">
+
+                <table id="table-list">
+                    <tr>
+                        <th>名次</th>
+                        <th>昵称</th>
+                        <th>得分</th>
+                        <th>关卡</th>
+                        <th>行数</th>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="table-bottom">
+                    <a href="#" id="clearData">重置数据</a>
+                </div>
+            </div>
+        </div>
+
+        <!--top10-->
+        <div class="t-win" id="u-enterTop10">
+
+            <div class="t-head">
+                <span class="t-title">:)</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+
+            <div class="t-body">
+
+                <div class="cont-top10">
+
+                    <div class="cont-top10-title">英雄榜</div>
+
+                    <div class="cont-top10-inputname">输入你的昵称，记录战绩</div>
+
+                    <input id="u-enterName" type="text" />
+
+                    <div id="u-enterTop10info">
+                        <div>分数&nbsp&nbsp&nbsp<span id="u-score"></span></div>
+                        <div>关卡&nbsp&nbsp&nbsp<span id="u-level"></span></div>
+                        <div>行数&nbsp&nbsp&nbsp<span id="u-lines"></span></div>
+                    </div>
+
+                    <div class="t-okAndNo">
                         <div class="t-button" id="u-enterNameBT">保存</div>
                         <div class="t-close t-button" id="">算了</div>
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
-    </div>
 
-    <div class="t-win" id = "about-win">
+        <div class="t-win" id="about-win">
             <div class="t-head">
                 <span class="t-title">关于</span>
                 <span class="t-close t-closeX">×</span>
@@ -189,65 +256,96 @@
                     <ul class="cont-about-value">
                         <li><a target="_blank" href="https://weibo.com/zhangxiaoleibox">张晓雷</a></li>
                         <li><a href="mailto:zhangxiaolei@outlook.com">zhangxiaolei@outlook.com</a></li>
-                        <li>[<a target="_blank" href="https://opensource.org/licenses/MIT">MIT</a>] Copyright (c) 2019 Zhang XiaoLei</li>
+                        <li>[<a target="_blank" href="https://opensource.org/licenses/MIT">MIT</a>] Copyright (c)
+                            2019
+                            Zhang XiaoLei</li>
                         <li><a target="_blank" href="https://github.com/zhangxiaoleipy/Tetris">项目地址</a></li>
                     </ul>
                 </div>
             </div>
-    </div>
-
-    <div class="t-win" id="option">
-        <div class="t-head">
-            <span class="t-title">设置</span>
-            <span class="t-close t-closeX">×</span>
         </div>
-        <div class="t-body">
-    
-            <div class="cont-opt">
 
-                <div class="opt-item">
+        <div class="t-win" id="option">
+            <div class="t-head">
+                <span class="t-title">设置</span>
+                <span class="t-close t-closeX">×</span>
+            </div>
+            <div class="t-body">
+
+                <div class="cont-opt">
+
+                    <div class="opt-item">
 
                         <div class="opt-leftbox">
 
-                                <div class="opt-up"><span>硬降（到底）</span><input id="opt-deep" class="opt-i" type="text" value="w"/> </div>
-            
-                                <div class="opt-other">
+                            <div class="opt-up"><span>硬降（到底）</span><input id="opt-deep" class="opt-i" type="text"
+                                    value="w" /> </div>
 
-                                        <div><span>向左</span><input id="opt-left" class="opt-i" type="text" value="a"/></div>
-                                        <div><span>下降</span><input id="opt-down" class="opt-i" type="text" value="s"/></div>
-                                        <div><span>向右</span><input id="opt-right" class="opt-i" type="text" value="d"/></div>
+                            <div class="opt-other">
 
+                                <div><span>向左</span><input id="opt-left" class="opt-i" type="text" value="a" />
                                 </div>
-            
-                            </div>
-            
-                            <div class="opt-rightbox">
-                                <div>顺时旋转 <input id="opt-rotate" class="opt-i" type="text" value="k"/></div>
-                                <div>逆时旋转 <input id="opt-rotate1" class="opt-i" type="text" value="j"/></div>
-                                <!--<div>180度旋转 <input id="opt-rotate2" class="opt-i" type="text" value="l"/></div>-->
-                            </div>
-                </div>
+                                <div><span>下降</span><input id="opt-down" class="opt-i" type="text" value="s" />
+                                </div>
+                                <div><span>向右</span><input id="opt-right" class="opt-i" type="text" value="d" />
+                                </div>
 
-                <div class="opt-item"> 
-                    <div>自动加速延时 <input id="opt-firstdelay" value="" type="text"/> 毫秒</div>
-                    <div>自动重复延时 <input id="opt-repedelay" value="" type="text"/> 毫秒</div>
-                </div>
+                            </div>
 
-                <div class="opt-control">
-                    <div id="opt-bt-yes" class="t-button" >确认</div>
-                    <div class="t-button t-close">取消</div>
+                        </div>
+
+                        <div class="opt-rightbox">
+                            <div>顺时旋转 <input id="opt-rotate" class="opt-i" type="text" value="k" /></div>
+                            <div>逆时旋转 <input id="opt-rotate1" class="opt-i" type="text" value="j" /></div>
+                            <!--<div>180度旋转 <input id="opt-rotate2" class="opt-i" type="text" value="l"/></div>-->
+                        </div>
+                    </div>
+
+                    <div class="opt-item">
+                        <div>自动加速延时 <input id="opt-firstdelay" value="" type="text" /> 毫秒</div>
+                        <div>自动重复延时 <input id="opt-repedelay" value="" type="text" /> 毫秒</div>
+                    </div>
+
+                    <div class="opt-control">
+                        <div id="opt-bt-yes" class="t-button">确认</div>
+                        <div class="t-button t-close">取消</div>
+                    </div>
+
                 </div>
 
             </div>
-
         </div>
-    </div>
-    
+
+
+
+        <div id="handlebar">
+
+            <div class="direcBT">
+
+                <div id="c-up">H</div>
+
+                <div class="d-leftright">
+                    <div id="c-left">←</div>
+                    <div id="c-right">→</div>
+                </div>
+
+                <div id="c-down">↓</div>
+
+            </div>
+
+            <div class="rotateBT">
+
+                <div id="r-left">R</div>
+                <div id="r-right">L</div>
+
+            </div>
+        </div>
+
     </div>
 
 
     <script src="gamejs.js"></script>
-    
+
 </body>
 
 </html>

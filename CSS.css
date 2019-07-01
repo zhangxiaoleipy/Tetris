@@ -1,4 +1,5 @@
 
+
 body {
     font-family: "微软雅黑", Arial, Helvetica, sans-serif;
     position: fixed;
@@ -9,12 +10,12 @@ body {
     background-color: rgb(22,22,22);
 }
 
-.game-container{
+.game-border{
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    height: 100%;
 }
 
 .game-window{
@@ -427,5 +428,78 @@ th, td {
     flex-direction: column;
     align-content: space-between;
     padding: 1em;
+}
+
+#handlebar{
+    -moz-user-select: none;
+    user-select: none;
+    border-radius: 3px;
+    width : 365px;
+    height: 110px;
+    margin-top: 5px;
+    border : 2px solid #333;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#handlebar .direcBT{
+    position: relative;
+    width: 102px;
+    height: 102px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#handlebar .rotateBT{
+    width: 102px;
+    height: 102px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#handlebar .d-leftright{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+#c-up, #c-left, #c-right, #c-down{
+    color: #FFF;
+    background-color: #333333;
+    text-align: center;
+    width : 34px;
+    height: 34px;
+    line-height: 34px;
+    border-radius: 17px;
+}
+
+#r-left, #r-right{
+    color : #FFF;
+    text-align: center;
+    width : 50px;
+    height: 32px;
+    line-height: 32px;
+    background-color: #333333;
+}
+
+#r-left{
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 2px;
+}
+#r-right{
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    margin-top: 2px;
 }
 

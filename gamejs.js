@@ -898,6 +898,8 @@ let rotateLock = false;
 document.onkeydown = function (k) {
 
     let key = toLower(k.key);
+    
+    keyColorDisplay(key);
 
     if ( key === keyboard.left ) {
 
@@ -956,6 +958,8 @@ document.onkeydown = function (k) {
 document.onkeyup = function (k) {
 
     let key = toLower(k.key);
+
+    keyColorReset(key);
     
     if (key === keyboard.deep) {
         deepLock = false;
@@ -1374,4 +1378,48 @@ document.querySelector("#opt-bt-yes").addEventListener("click", function () {
     screenCover("close");
 })
 
+
+
+let keyColor = Object.create(null);
+
+keyColor.up = document.querySelector("#c-up");
+keyColor.left = document.querySelector("#c-left");
+keyColor.right = document.querySelector("#c-right");
+keyColor.down = document.querySelector("#c-down");
+keyColor.rotateRight = document.querySelector("#r-right");
+keyColor.rotateLeft = document.querySelector("#r-left");
+
+function keyColorDisplay(s, color = "#999") {
+    switch (s) {
+        case keyboard.left: keyColor.left.style.backgroundColor = color
+            break;
+        case keyboard.right: keyColor.right.style.backgroundColor = color
+            break;
+        case keyboard.deep: keyColor.up.style.backgroundColor = color
+            break;
+        case keyboard.down: keyColor.down.style.backgroundColor = color
+            break;
+        case keyboard.rotate: keyColor.rotateRight.style.backgroundColor = color
+            break;
+        case keyboard.rotate1: keyColor.rotateLeft.style.backgroundColor = color
+            break;
+    }
+}
+
+function keyColorReset(s, color = "#333333") {
+    switch (s) {
+        case keyboard.left: keyColor.left.style.backgroundColor = color
+            break;
+        case keyboard.right: keyColor.right.style.backgroundColor = color
+            break;
+        case keyboard.deep: keyColor.up.style.backgroundColor = color
+            break;
+        case keyboard.down: keyColor.down.style.backgroundColor = color
+            break;
+        case keyboard.rotate: keyColor.rotateRight.style.backgroundColor = color
+            break;
+        case keyboard.rotate1: keyColor.rotateLeft.style.backgroundColor = color
+            break;
+    }
+}
 
