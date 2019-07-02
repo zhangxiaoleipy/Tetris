@@ -895,10 +895,18 @@ let down1stStop;
 //确保每次按下旋转只能旋转一次，不会进入连续触发
 let rotateLock = false;
 
-document.onkeydown = function (k) {
+document.onkeydown = controlOnkeyDown;
 
-    let key = toLower(k.key);
-    
+function controlOnkeyDown (k) {
+
+    let key;
+
+    if (typeof k === "string") {
+        key = k;
+    } else {
+        key = toLower(k.key);
+    }
+
     keyColorDisplay(key);
 
     if ( key === keyboard.left ) {
@@ -955,9 +963,17 @@ document.onkeydown = function (k) {
 
 // 解除连续触发
 
-document.onkeyup = function (k) {
+document.onkeyup = controlOnkeyUp;
 
-    let key = toLower(k.key);
+function controlOnkeyUp(k) {
+
+    let key;
+
+    if (typeof k === "string") {
+        key = k;
+    } else {
+        key = toLower(k.key);
+    }
 
     keyColorReset(key);
     
@@ -1389,37 +1405,111 @@ keyColor.down = document.querySelector("#c-down");
 keyColor.rotateRight = document.querySelector("#r-right");
 keyColor.rotateLeft = document.querySelector("#r-left");
 
-function keyColorDisplay(s, color = "#999") {
+
+
+
+
+
+
+keyColor.up.onmousedown = function () {
+    controlOnkeyDown(keyboard.deep);
+}
+
+keyColor.left.onmousedown = function () {
+    controlOnkeyDown(keyboard.left);
+}
+
+keyColor.right.onmousedown = function () {
+    controlOnkeyDown(keyboard.right);
+}
+
+keyColor.down.onmousedown = function () {
+    controlOnkeyDown(keyboard.down);
+}
+
+
+keyColor.rotateLeft.onmousedown = function () {
+    controlOnkeyDown(keyboard.rotate1);
+}
+
+keyColor.rotateRight.onmousedown = function () {
+    controlOnkeyDown(keyboard.rotate);
+}
+
+
+///////////////up
+
+keyColor.up.onmouseup = function () {
+    controlOnkeyUp(keyboard.deep);
+}
+
+keyColor.left.onmouseup = function () {
+    controlOnkeyUp(keyboard.left);
+}
+
+keyColor.right.onmouseup = function () {
+    controlOnkeyUp(keyboard.right);
+}
+
+keyColor.down.onmouseup = function () {
+    controlOnkeyUp(keyboard.down);
+}
+
+
+keyColor.rotateLeft.onmouseup = function () {
+    controlOnkeyUp(keyboard.rotate1);
+}
+
+keyColor.rotateRight.onmouseup = function () {
+    controlOnkeyUp(keyboard.rotate);
+}
+
+
+
+
+function setAttr (ele, val) {
+    ele.setAttribute("class", val);
+}
+
+
+function keyColorDisplay(s) {
+
+    let styleClass = "game-bt-tap-style";
+
     switch (s) {
-        case keyboard.left: keyColor.left.style.backgroundColor = color
+        case keyboard.left: setAttr(keyColor.left, styleClass);
             break;
-        case keyboard.right: keyColor.right.style.backgroundColor = color
+        case keyboard.right: setAttr(keyColor.right, styleClass);
             break;
-        case keyboard.deep: keyColor.up.style.backgroundColor = color
+        case keyboard.deep: setAttr(keyColor.up, styleClass);
             break;
-        case keyboard.down: keyColor.down.style.backgroundColor = color
+        case keyboard.down: setAttr(keyColor.down, styleClass);
             break;
-        case keyboard.rotate: keyColor.rotateRight.style.backgroundColor = color
+        case keyboard.rotate: setAttr(keyColor.rotateRight, styleClass);
             break;
-        case keyboard.rotate1: keyColor.rotateLeft.style.backgroundColor = color
+        case keyboard.rotate1: setAttr(keyColor.rotateLeft, styleClass);
             break;
     }
 }
 
-function keyColorReset(s, color = "#333333") {
+function keyColorReset(s, color = "#118616") {
+
+    let styleClass = "game-bt-style";
+
     switch (s) {
-        case keyboard.left: keyColor.left.style.backgroundColor = color
+        case keyboard.left: setAttr(keyColor.left, styleClass);
             break;
-        case keyboard.right: keyColor.right.style.backgroundColor = color
+        case keyboard.right: setAttr(keyColor.right, styleClass);
             break;
-        case keyboard.deep: keyColor.up.style.backgroundColor = color
+        case keyboard.deep: setAttr(keyColor.up, styleClass);
             break;
-        case keyboard.down: keyColor.down.style.backgroundColor = color
+        case keyboard.down: setAttr(keyColor.down, styleClass);
             break;
-        case keyboard.rotate: keyColor.rotateRight.style.backgroundColor = color
+        case keyboard.rotate: setAttr(keyColor.rotateRight, styleClass);
             break;
-        case keyboard.rotate1: keyColor.rotateLeft.style.backgroundColor = color
+        case keyboard.rotate1: setAttr(keyColor.rotateLeft, styleClass);
             break;
     }
 }
+
 
