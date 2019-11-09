@@ -6,6 +6,7 @@ Email : zhangxiaolei@outlook.com
 */
 
 let log = console.log;
+
 log("---add_rotate---")
 
 let canvas = document.querySelector("#canvas");
@@ -760,11 +761,13 @@ function rotate(d) {
     如果采用被动偏移，方块落地以后，偏转数据会超出table范围，收集数据时会导致索引超出范围问题
     */
     let dp = 24;
+    
     for (let i of moving) {
         if (i[0] > dp) {
             dp = i[0];
         }
     }
+
     dp = dp - 24;
     while (dp --) {
         moveOneStep(moving, "up");
@@ -1216,7 +1219,6 @@ let initGameDate = {
         down : "s",
         rotate : "k", //顺时针
         rotate1 : "j", //逆时针
-        //rotate2 : "l", //180度
         firstDelay : 100,
         repeDelay : 65
     }
@@ -1305,7 +1307,6 @@ ui.down = document.querySelector("#opt-down");
 ui.right = document.querySelector("#opt-right");
 ui.rotate = document.querySelector("#opt-rotate");
 ui.rotate1 = document.querySelector("#opt-rotate1");
-//ui.rotate2 = document.querySelector("#opt-rotate2");
 ui.firstDelay = document.querySelector("#opt-firstdelay");
 ui.repeDelay = document.querySelector("#opt-repedelay");
 
@@ -1318,7 +1319,6 @@ document.querySelector("#optiontest").addEventListener("click", function () {
     ui.right.value = keyboard.right;
     ui.rotate.value = keyboard.rotate;
     ui.rotate1.value = keyboard.rotate1;
-    //ui.rotate2.value = keyboard.rotate2;
     ui.firstDelay.value = keyboard.firstDelay;
     ui.repeDelay.value = keyboard.repeDelay;
     screenCover("open");
@@ -1386,7 +1386,6 @@ document.querySelector("#opt-bt-yes").addEventListener("click", function () {
     keyboard.right = toLower(ui.right.value);
     keyboard.rotate = toLower(ui.rotate.value);
     keyboard.rotate1 = toLower(ui.rotate1.value);
-    //keyboard.rotate2 = toLower(ui.rotate2.value);
     keyboard.firstDelay = parseInt(ui.firstDelay.value);
     keyboard.repeDelay = parseInt(ui.repeDelay.value);
     document.querySelector("#option").style.display = "none";
@@ -1404,11 +1403,6 @@ keyColor.right = document.querySelector("#c-right");
 keyColor.down = document.querySelector("#c-down");
 keyColor.rotateRight = document.querySelector("#r-right");
 keyColor.rotateLeft = document.querySelector("#r-left");
-
-
-
-
-
 
 
 keyColor.up.onmousedown = function () {
@@ -1464,9 +1458,6 @@ keyColor.rotateRight.onmouseup = function () {
     controlOnkeyUp(keyboard.rotate);
 }
 
-
-
-
 function setAttr (ele, val) {
     ele.setAttribute("class", val);
 }
@@ -1492,7 +1483,7 @@ function keyColorDisplay(s) {
     }
 }
 
-function keyColorReset(s, color = "#118616") {
+function keyColorReset(s) {
 
     let styleClass = "game-bt-style";
 
