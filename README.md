@@ -1,5 +1,7 @@
-
-**地址在这里 : [俄罗斯方块](https://zhangxiaoleipy.github.io/tetris/fangkuai.html)**
+```
+/***代码直接查看DEMO，这里的代码已废弃***/
+```
+**地址在这里 : [俄罗斯方块](https://zhangxiaoleiv.github.io/newTetris/fangkuai.html)**
 
 2019年春节期间做的一个俄罗斯方块游戏，游戏主要用原生的 JS + canvas 标签实现（别的也不会）。
 
@@ -17,7 +19,7 @@
 
 更改了黑色的主题，白色很难配色。
 
-![基本UI](https://github.com/zhangxiaoleipy/Tetris/blob/master/pic/top100.PNG)
+![基本UI](https://github.com/zhangxiaoleiv/Tetris/blob/master/pic/top100.PNG)
 
 **更新：2019年3月6日 20:55:57**
 
@@ -25,6 +27,6 @@
 
 增加按键二级延时功能，时间可以在设置面板更改
 
-![设置选项](https://github.com/zhangxiaoleipy/Tetris/blob/master/pic/sad001.PNG)
+![设置选项](https://github.com/zhangxiaoleiv/Tetris/blob/master/pic/sad001.PNG)
 
 

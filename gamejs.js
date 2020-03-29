@@ -1380,20 +1380,35 @@ document.querySelectorAll(".opt-i").forEach(function (item) {
 
 
 document.querySelector("#opt-bt-yes").addEventListener("click", function () {
-    keyboard.deep = toLower(ui.deep.value);
-    keyboard.left = toLower(ui.left.value);
-    keyboard.down = toLower(ui.down.value);
-    keyboard.right = toLower(ui.right.value);
-    keyboard.rotate = toLower(ui.rotate.value);
-    keyboard.rotate1 = toLower(ui.rotate1.value);
-    keyboard.firstDelay = parseInt(ui.firstDelay.value);
-    keyboard.repeDelay = parseInt(ui.repeDelay.value);
-    document.querySelector("#option").style.display = "none";
-    saveData();
-    screenCover("close");
+    if (keyboard.deep !== ui.deep.value ||
+        keyboard.left !== ui.left.value ||
+        keyboard.down !== ui.down.value ||
+        keyboard.right !== ui.right.value ||
+        keyboard.rotate !== ui.rotate.value ||
+        keyboard.rotate1 !== ui.rotate1.value ||
+        keyboard.firstDelay !== +ui.firstDelay.value ||
+        keyboard.repeDelay !== +ui.repeDelay.value) {
+        if (confirm("确定设置更改？")) {
+            keyboard.deep = toLower(ui.deep.value);
+            keyboard.left = toLower(ui.left.value);
+            keyboard.down = toLower(ui.down.value);
+            keyboard.right = toLower(ui.right.value);
+            keyboard.rotate = toLower(ui.rotate.value);
+            keyboard.rotate1 = toLower(ui.rotate1.value);
+            keyboard.firstDelay = parseInt(ui.firstDelay.value);
+            keyboard.repeDelay = parseInt(ui.repeDelay.value);
+            document.querySelector("#option").style.display = "none";
+            saveData();
+            screenCover("close");
+        } else {
+            document.querySelector("#option").style.display = "none";
+            screenCover("close");
+        }
+    } else {
+        document.querySelector("#option").style.display = "none";
+        screenCover("close");
+    }
 })
-
-
 
 let keyColor = Object.create(null);
 
@@ -1430,8 +1445,7 @@ keyColor.rotateRight.onmousedown = function () {
     controlOnkeyDown(keyboard.rotate);
 }
 
-
-///////////////up
+/***********down↑******up↓*************/
 
 keyColor.up.onmouseup = function () {
     controlOnkeyUp(keyboard.deep);
@@ -1461,7 +1475,6 @@ keyColor.rotateRight.onmouseup = function () {
 function setAttr (ele, val) {
     ele.setAttribute("class", val);
 }
-
 
 function keyColorDisplay(s) {
 
